@@ -1,63 +1,27 @@
 #include "main.h"
-#include <stdarg.h>
-#include <unistd.h>
-#include <stdlib.h>
 
-/* Writes a single character */
-int _putchar(char c)
-{
-    return write(1, &c, 1);
-}
-
-/* Prints a character from va_args */
-int print_char(va_list args)
-{
-    return _putchar((char)va_arg(args, int));
-}
-
-/* Prints a string from va_args */
-int print_string(va_list args)
-{
-    char *str = va_arg(args, char *);
-    int count = 0;
-
-    if (!str)
-        str = "(null)";
-
-    while (*str)
-    {
-        _putchar(*str++);
-        count++;
-    }
-    return count;
-}
-
-/* Prints a percent sign */
-int print_percent(va_list args)
-{
-    (void)args;
-    return _putchar('%');
-}
-
-/* Main _printf function */
+/**
+ * _printf - prints a formatted string
+ * @format: the string to format
+ *
+ * Return: The number of printed characters, or -1 if format is NULL
+ */
 int _printf(const char *format, ...)
 {
     va_list args;
+    int i;
     int count = 0;
 
-    if (!format)
-        return -1;
+    if (format == NULL)
+        return (-1);
 
     va_start(args, format);
 
-    for (int i = 0; format[i]; i++)
+    for (i = 0; format[i]; i++)
     {
-        if (format[i] == '%')
+        if (format[i] == '%' && format[i + 1])
         {
             i++;
-            if (!format[i])
-                break;
-
             if (format[i] == 'c')
                 count += print_char(args);
             else if (format[i] == 's')
@@ -79,6 +43,5 @@ int _printf(const char *format, ...)
     }
 
     va_end(args);
-    return count;
+    return (count);
 }
-
