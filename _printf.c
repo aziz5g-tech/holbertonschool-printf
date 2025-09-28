@@ -19,8 +19,14 @@ int _printf(const char *format, ...)
 
     for (i = 0; format[i]; i++)
     {
-        if (format[i] == '%' && format[i + 1])
+        if (format[i] == '%')
         {
+            if (!format[i + 1]) /* حالة % لحالها */
+            {
+                va_end(args);
+                return (-1);
+            }
+
             i++;
             if (format[i] == 'c')
                 count += print_char(args);
