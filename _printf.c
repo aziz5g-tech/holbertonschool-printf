@@ -10,14 +10,14 @@
 static int handle_specifier(char c, va_list args)
 {
 if (c == 'c')
-return print_char(args);
+return (print_char(args));
 else if (c == 's')
-return print_string(args);
+return (print_string(args));
 else if (c == '%')
-return print_percent(args);
+return (print_percent(args));
 _putchar('%');
 _putchar(c);
-return 2;
+return (2);
 }
 
 /**
@@ -31,7 +31,7 @@ int _printf(const char *format, ...)
 va_list args;
 int i, count = 0;
 if (!format)
-return -1;
+return (-1);
 va_start(args, format);
 for (i = 0; format[i]; i++)
 {
@@ -40,7 +40,7 @@ if (format[i] == '%')
 if (!format[i + 1])
 {
 va_end(args);
-return -1;
+return (-1);
 }
 i++;
 count += handle_specifier(format[i], args);
