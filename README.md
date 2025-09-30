@@ -21,3 +21,26 @@ int _printf(const char *format, ...);
 * `va_end` (man 3 va_end)
 * `va_copy` (man 3 va_copy)
 * `va_arg` (man 3 va_arg)
+
+
+## Format Specifiers
+
+Our `_printf` function handles the following conversion specifiers:
+
+| Specifier | Description |
+|-----------|-------------|
+| `%c` | Character |
+| `%s` | String |
+| `%d` | Signed decimal integer |
+| `%i` | Signed integer |
+| `%%` | Literal percent sign |
+
+### Detailed Format Specifier Descriptions
+
+#### `%c` - Character
+- **Function**: `print_char(va_list args)`
+- **Purpose**: Prints a single character
+- **Input**: Takes an `int` argument (character codes are passed as int in variadic functions)
+- **Output**: Prints the corresponding ASCII character
+- **Example**: `_printf("Letter: %c\n", 'A');` → `Letter: A`
+
