@@ -113,3 +113,21 @@ Percent: %
 | `main.h` | Header file with function prototypes |
 | `_putchar.c` | Function to write a character to stdout |
 
+
+## Function Descriptions
+
+### `_printf`
+The main function that mimics the behavior of the standard `printf` function. It processes the format string and calls appropriate helper functions based on conversion specifiers.
+
+### `print_char`
+Prints a single character.
+
+### `print_string`
+Prints a string of characters. If the string is NULL, it prints "(null)".
+
+### `print_integer`
+Prints signed integers, handling both positive and negative numbers including edge cases like `INT_MAX` and `INT_MIN`.
+
+### `print_percent`
+Prints a literal percent sign.
+
