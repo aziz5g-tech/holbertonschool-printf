@@ -14,3 +14,12 @@ This simplified version of printf supports the following conversion specifiers:
 Print a single character.
 .TP
 \fB%s\fP
+Print a string of characters.
+.TP
+\fB%%\fP
+Print a percent sign.
+.TP
+\fB%d\fP, \fB%i\fP
+Print a signed decimal integer.
+.PP
+Flags, field width, precision and length modifiers are not handled.
