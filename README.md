@@ -44,3 +44,19 @@ Our `_printf` function handles the following conversion specifiers:
 - **Output**: Prints the corresponding ASCII character
 - **Example**: `_printf("Letter: %c\n", 'A');` → `Letter: A`
 
+
+#### `%s` - String
+- **Function**: `print_string(va_list args)`
+- **Purpose**: Prints a null-terminated string
+- **Input**: Takes a `char *` argument (pointer to string)
+- **Special handling**: If the string is `NULL`, prints `(null)`
+- **Output**: Prints each character in the string until null terminator
+- **Example**: `_printf("Name: %s\n", "John");` → `Name: John`
+
+#### `%d` - Signed Decimal Integer
+- **Function**: `print_integer(va_list args)`
+- **Purpose**: Prints a signed integer in decimal (base 10) format
+- **Input**: Takes an `int` argument
+- **Range**: Handles values from `INT_MIN` (-2147483648) to `INT_MAX` (2147483647)
+- **Special handling**: Negative numbers are printed with a minus sign
+- **Example**: `_printf("Number: %d\n", -42);` → `Number: -42
