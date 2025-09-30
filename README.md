@@ -74,3 +74,32 @@ Our `_printf` function handles the following conversion specifiers:
 - **Input**: No argument consumed from the argument list
 - **Output**: Always prints a single `%` character
 - **Example**: `_printf("Progress: 50%%\n");` → `Progress: 50%`
+
+
+## Usage Examples
+
+```c
+#include "main.h"
+
+int main(void)
+{
+    _printf("Hello, World!\n");
+    _printf("Character: %c\n", 'A');
+    _printf("String: %s\n", "Hello");
+    _printf("Integer: %d\n", 42);
+    _printf("Negative: %i\n", -123);
+    _printf("Percent: %%\n");
+    return (0);
+}
+```
+
+Output:
+```
+Hello, World!
+Character: A
+String: Hello
+Integer: 42
+Negative: -123
+Percent: %
+```
+
