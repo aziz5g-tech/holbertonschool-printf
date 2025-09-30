@@ -42,4 +42,4 @@ _printf("Negative: %i\\n", -98);
 .SH SEE ALSO
 printf(3)
 .SH AUTHORS
-Lina (linawsm52), Aziz (aziz5g-tech), Nourah ()
+Lina (linawsm52), Aziz (aziz5g-tech), Nourah (noneals)
