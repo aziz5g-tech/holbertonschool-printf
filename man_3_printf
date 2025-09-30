@@ -1,1 +1,16 @@
-
+.TH _printf 3 "September 2025" "Holberton School" "Library Functions Manual"
+.SH NAME
+_printf \- custom implementation of the printf function
+.SH SYNOPSIS
+.B #include "main.h"
+.br
+.B int _printf(const char *format, ...);
+.SH DESCRIPTION
+The _printf function produces output according to a format string.
+.br
+This simplified version of printf supports the following conversion specifiers:
+.TP
+\fB%c\fP
+Print a single character.
+.TP
+\fB%s\fP
