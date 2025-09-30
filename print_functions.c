@@ -46,3 +46,13 @@ int print_percent(va_list args)
 	_putchar('%');
 	return (1);
 }
+
+/**
+ * print_integer - prints an integer
+ * @args: argument list
+ * Return: number of characters printed
+ */
+int print_integer(va_list args)
+{
+
+}

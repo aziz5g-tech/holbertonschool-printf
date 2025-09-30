@@ -15,6 +15,10 @@ else if (c == 's')
 return (print_string(args));
 else if (c == '%')
 return (print_percent(args));
+else if (c == 'd' || c == 'i')
+{
+return (print_integer(args));
+}
 _putchar('%');
 _putchar(c);
 return (2);
