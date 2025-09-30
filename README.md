@@ -131,3 +131,10 @@ Prints signed integers, handling both positive and negative numbers including ed
 ### `print_percent`
 Prints a literal percent sign.
 
+
+## Return Value
+
+Upon successful return, `_printf` returns the number of characters printed (excluding the null byte used to end output to strings).
+
+If an error occurs, a negative value is returned.
+
