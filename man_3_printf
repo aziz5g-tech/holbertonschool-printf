@@ -23,3 +23,23 @@ Print a percent sign.
 Print a signed decimal integer.
 .PP
 Flags, field width, precision and length modifiers are not handled.
+.SH RETURN VALUE
+Returns the number of characters printed.
+On error (such as NULL format), returns \-1.
+.SH EXAMPLES
+.nf
+_printf("Hello %s\\n", "world");
+     => Hello world
+_printf("Char: %c\\n", 'A');
+     => Char: A
+_printf("Percent: %%\\n");
+     => Percent: %
+_printf("Number: %d\\n", 1024);
+     => Number: 1024
+_printf("Negative: %i\\n", -98);
+     => Negative: -98
+.fi
+.SH SEE ALSO
+printf(3)
+.SH AUTHORS
+Lina (linawsm52), Aziz (aziz5g-tech), Nourah ()
