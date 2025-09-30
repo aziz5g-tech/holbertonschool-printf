@@ -60,3 +60,17 @@ Our `_printf` function handles the following conversion specifiers:
 - **Range**: Handles values from `INT_MIN` (-2147483648) to `INT_MAX` (2147483647)
 - **Special handling**: Negative numbers are printed with a minus sign
 - **Example**: `_printf("Number: %d\n", -42);` → `Number: -42
+
+#### `%i` - Signed Integer
+- **Function**: `print_integer(va_list args)`
+- **Purpose**: Identical to `%d` - prints a signed integer in decimal format
+- **Input**: Takes an `int` argument
+- **Note**: In our implementation, `%i` and `%d` behave exactly the same
+- **Example**: `_printf("Value: %i\n", 123);` → `Value: 123`
+
+#### `%%` - Literal Percent Sign
+- **Function**: `print_percent(va_list args)`
+- **Purpose**: Prints a literal percent character
+- **Input**: No argument consumed from the argument list
+- **Output**: Always prints a single `%` character
+- **Example**: `_printf("Progress: 50%%\n");` → `Progress: 50%`
