@@ -69,7 +69,7 @@ static int print_number(unsigned int num)
  * print_integer - prints an integer
  * @args: argument list
  * Return: number of characters printed
- */
+ *///////
 int print_integer(va_list args)
 {
 	int n = va_arg(args, int);
