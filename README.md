@@ -103,3 +103,13 @@ Negative: -123
 Percent: %
 ```
 
+
+## Files
+
+| File | Description |
+|------|-------------|
+| `_printf.c` | Main printf function |
+| `print_functions.c` | Helper functions for different format specifiers |
+| `main.h` | Header file with function prototypes |
+| `_putchar.c` | Function to write a character to stdout |
+
