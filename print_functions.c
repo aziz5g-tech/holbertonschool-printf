@@ -54,5 +54,4 @@ int print_percent(va_list args)
  */
 int print_integer(va_list args)
 {
-
 }
