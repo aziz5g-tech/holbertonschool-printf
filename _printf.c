@@ -36,7 +36,7 @@ static int handle_specifier(char c, va_list args)
 		return (print_integer(args));
 	else if (c == 'b')
 	{
-		unsigned long n = va_arg(args, unsigned long);
+		unsigned int n = va_arg(args, unsigned int);
 
 		return (print_binary_number(n));
 	}
