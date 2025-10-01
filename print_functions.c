@@ -91,3 +91,29 @@ int print_integer(va_list args)
 
 	return (count);
 }
+/**
+ * print_unsigned - prints an unsigned integer in base 10
+ * @args: argument list
+ *
+ * Return: number of characters printed
+ */
+int print_unsigned(va_list args)
+{
+    unsigned int n = va_arg(args, unsigned int);
+    int count = 0;
+    char buf[50];
+    int i = 0;
+
+    if (n == 0)
+        return (_putchar('0'));
+
+    while (n)
+    {
+        buf[i++] = (n % 10) + '0';
+        n /= 10;
+    }
+    while (i--)
+        count += _putchar(buf[i]);
+
+    return (count);
+}
