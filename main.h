@@ -11,7 +11,7 @@
 /* Core printf function */
 int _printf(const char *format, ...);
 
-/* Print functions */
+/* Original print functions (without buffer) */
 int print_char(va_list args);
 int print_string(va_list args);
 int print_percent(va_list args);
@@ -25,7 +25,18 @@ int print_hex_upper(va_list args);
 int flush_buffer(char *buffer, int *index);
 int add_to_buffer(char c, char *buffer, int *index);
 
+/* Buffer-based print functions */
+int print_binary_buffer(unsigned int n, char *buffer, int *index);
+int print_char_buffer(va_list args, char *buffer, int *index);
+int print_string_buffer(va_list args, char *buffer, int *index);
+int print_percent_buffer(va_list args, char *buffer, int *index);
+int print_number_buffer(unsigned int num, char *buffer, int *index);
+int print_integer_buffer(va_list args, char *buffer, int *index);
+int print_unsigned_buffer(va_list args, char *buffer, int *index);
+int print_octal_buffer(unsigned int num, char *buffer, int *index);
+int print_hex_buffer(unsigned int num, char *buffer, int *index, int uppercase);
+
 /* Helper functions */
 int _putchar(char c);
 
-#endif /* MAIN_H */
+#endif
