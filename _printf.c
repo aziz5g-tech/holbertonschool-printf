@@ -1,10 +1,13 @@
 #include "main.h"
-static int print_binary_number(unsigned long n) 
+static int print_binary_number(unsigned long n)
 {
-int count = 0;
-if (n > 1) count += print_binary_number(n / 2);
-_putchar((n % 2) + '0'); 
-return count + 1; 
+    int count = 0;
+
+    if (n > 1)
+        count += print_binary_number(n / 2);
+
+    _putchar((n % 2) + '0');
+    return count + 1;
 }
 /**
  * handle_specifier - handles format specifiers
@@ -24,11 +27,10 @@ static int handle_specifier(char c, va_list args)
 		return (print_percent(args));
 	else if (c == 'd' || c == 'i')
 		return (print_integer(args));
-	else if (c == 'b') 
-	{ 
-		long val = va_arg(args, long);
-	unsigned long n = (unsigned long)val;
-	return print_binary_number(n); 
+else if (c == 'b')
+	{
+		unsigned long n = va_arg(args, unsigned long);
+		return print_binary_number(n);
 	}
 
         _putchar('0');
