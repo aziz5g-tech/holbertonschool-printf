@@ -30,7 +30,8 @@ static int handle_specifier(char c, va_list args)
 		return (print_integer(args));
 else if (c == 'b')
 {
-    unsigned long n = va_arg(args, unsigned long);
+    long val = va_arg(args, long);
+	unsigned long n = (unsigned long)val;
     return print_binary_number(n);
 }
 	_putchar('%');
