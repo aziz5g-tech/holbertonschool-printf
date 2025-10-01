@@ -24,9 +24,8 @@ static int handle_specifier(char c, va_list args)
 		return (print_integer(args));
 else if (c == 'b')
 {
-    long val = va_arg(args, long);
-    unsigned long n = (unsigned long)val;
-    return print_binary_number(n);
+unsigned long long n = va_arg(args, unsigned long long);
+	return print_binary_number(n);
 }
 
 
