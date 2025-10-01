@@ -1,15 +1,20 @@
 #include "main.h"
 
-/* Binary */
+/**
+ * print_binary_number - prints a binary number
+ * @n: the unsigned long number to print
+ *
+ * Return: The number of printed characters
+ */
 static int print_binary_number(unsigned long n)
 {
-    int count = 0;
+	int count = 0;
 
-    if (n > 1)
-        count += print_binary_number(n / 2);
+	if (n > 1)
+		count += print_binary_number(n / 2);
 
-    _putchar((n % 2) + '0');
-    return count + 1;
+	_putchar((n % 2) + '0');
+	return count + 1;
 }
 
 /**
