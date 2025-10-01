@@ -7,16 +7,7 @@
  *
  * Return: The number of printed characters for the specifier
  */
-static int print_binary_number(unsigned long n)
-{
-    int count = 0;
 
-    if (n > 1)
-        count += print_binary_number(n / 2);
-
-    _putchar((n % 2) + '0');
-    return count + 1;
-}
 static int handle_specifier(char c, va_list args)
 {
 	if (c == 'c')
