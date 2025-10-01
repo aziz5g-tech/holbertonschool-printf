@@ -14,7 +14,7 @@ static int print_binary_number(unsigned long n)
 		count += print_binary_number(n / 2);
 
 	_putchar((n % 2) + '0');
-	return count + 1;
+	return (count + 1);
 }
 
 /**
@@ -37,7 +37,7 @@ static int handle_specifier(char c, va_list args)
 	else if (c == 'b')
 	{
 		unsigned long n = va_arg(args, unsigned long);
-		return print_binary_number(n);
+		return (print_binary_number(n));
 	}
 
 	_putchar('%');
