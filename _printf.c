@@ -1,4 +1,6 @@
 #include "main.h"
+
+/* Binary */
 static int print_binary_number(unsigned long n)
 {
     int count = 0;
@@ -17,7 +19,6 @@ static int print_binary_number(unsigned long n)
  *
  * Return: The number of printed characters for the specifier
  */
-
 static int handle_specifier(char c, va_list args)
 {
 	if (c == 'c')
@@ -28,27 +29,11 @@ static int handle_specifier(char c, va_list args)
 		return (print_percent(args));
 	else if (c == 'd' || c == 'i')
 		return (print_integer(args));
-else if (c == 'b')
-{
-    unsigned long n = va_arg(args, unsigned long);
-    return print_binary_number(n);
-}
-        _putchar('0');
-        return 1;
-    }
-    return print_binary_number(n);
-}
-        _putchar('0');
-        return 1;
-    }
-    return print_binary_number(n);
-}
-        _putchar('0');
-        return 1;
-    }
-    return print_binary_number(n);
-}
-
+	else if (c == 'b')
+	{
+		unsigned long n = va_arg(args, unsigned long);
+		return print_binary_number(n);
+	}
 
 	_putchar('%');
 	_putchar(c);
@@ -93,4 +78,3 @@ int _printf(const char *format, ...)
 	va_end(args);
 	return (count);
 }
-
