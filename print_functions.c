@@ -117,3 +117,28 @@ int print_unsigned(va_list args)
 
     return (count);
 }
+/**
+ * print_octal - prints an unsigned integer in octal
+ * @args: argument list
+ *
+ * Return: number of characters printed
+ */
+int print_octal(va_list args)
+{
+    unsigned int n = va_arg(args, unsigned int);
+    char buf[50];
+    int i = 0, count = 0;
+
+    if (n == 0)
+        return (_putchar('0'));
+
+    while (n)
+    {
+        buf[i++] = (n % 8) + '0';
+        n /= 8;
+    }
+    while (i--)
+        count += _putchar(buf[i]);
+
+    return (count);
+}
