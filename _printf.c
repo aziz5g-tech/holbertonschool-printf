@@ -7,6 +7,16 @@
  *
  * Return: The number of printed characters for the specifier
  */
+static int print_binary_number(unsigned long n)
+{
+    int count = 0;
+
+    if (n > 1)
+        count += print_binary_number(n / 2);
+
+    _putchar((n % 2) + '0');
+    return count + 1;
+}
 static int handle_specifier(char c, va_list args)
 {
 	if (c == 'c')
@@ -22,6 +32,7 @@ static int handle_specifier(char c, va_list args)
 	_putchar(c);
 	return (2);
 }
+
 
 /**
  * _printf - prints a formatted string
@@ -61,39 +72,4 @@ int _printf(const char *format, ...)
 	va_end(args);
 	return (count);
 }
-/**
- * print_binary - prints an unsigned int in binary
- * @args: argument list containing the unsigned int
- *
- * Return: number of characters printed
- */
-int print_binary(va_list args)
-{
-    unsigned int n = va_arg(args, unsigned int);
-    unsigned int mask = 1 << (sizeof(unsigned int) * 8 - 1);
-    int started = 0, count = 0;
 
-    if (n == 0)
-    {
-        _putchar('0');
-        return (1);
-    }
-
-    while (mask)
-    {
-        if (n & mask)
-        {
-            _putchar('1');
-            count++;
-            started = 1;
-        }
-        else if (started)
-        {
-            _putchar('0');
-            count++;
-        }
-        mask >>= 1;
-    }
-
-    return (count);
-}
