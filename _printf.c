@@ -1,5 +1,5 @@
 #include "main.h"
-static int print_binary_number(unsigned long n)
+static int print_binary_number(unsigned int n)
 {
     int count = 0;
     if (n > 1)
@@ -27,9 +27,14 @@ static int handle_specifier(char c, va_list args)
 		return (print_integer(args));
 else if (c == 'b')
 {
-    unsigned long n = va_arg(args, unsigned long);
+    unsigned int n = va_arg(args, unsigned int);
     if (n == 0)
     {
+        _putchar('0');
+        return 1;
+    }
+    return print_binary_number(n);
+}
         _putchar('0');
         return 1;
     }
