@@ -6,7 +6,6 @@
 #include <limits.h>
 
 int _printf(const char *format, ...);
-static int print_binary_number(unsigned long n);
 int _putchar(char c);
 int print_char(va_list args);
 int print_string(va_list args);
