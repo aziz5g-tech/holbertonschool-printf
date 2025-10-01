@@ -23,6 +23,8 @@ static int print_binary_number(unsigned long n)
  * @args: the argument list
  *
  * Return: The number of printed characters for the specifier
+  *
+ * Supported specifiers: c, s, %, d, i, b, u, o, x, X
  */
 static int handle_specifier(char c, va_list args)
 {
