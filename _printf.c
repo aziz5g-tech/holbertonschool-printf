@@ -1,11 +1,8 @@
 #include "main.h"
 static int print_binary_number(unsigned long n)
-{
-    int count = 0;
-    if (n > 1)
-        count += print_binary_number(n / 2);
-    _putchar((n % 2) + '0');
-    return count + 1;
+{ int count = 0;
+ if (n > 1) count += print_binary_number(n / 2); 
+ _putchar((n % 2) + '0'); return count + 1;
 }
 /**
  * handle_specifier - handles format specifiers
