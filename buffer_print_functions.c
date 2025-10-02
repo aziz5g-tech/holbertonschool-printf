@@ -182,3 +182,7 @@ int print_hex_buffer(unsigned int num, char *buffer, int *index, int uppercase)
     add_to_buffer(hex_char, buffer, index);
     return (count + 1);
 }
+int print_string_special_buffer(va_list args, char *buffer, int *index)
+{
+
+}
