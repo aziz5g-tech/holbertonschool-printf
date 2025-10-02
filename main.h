@@ -29,6 +29,7 @@ int add_to_buffer(char c, char *buffer, int *index);
 int print_binary_buffer(unsigned int n, char *buffer, int *index);
 int print_char_buffer(va_list args, char *buffer, int *index);
 int print_string_buffer(va_list args, char *buffer, int *index);
+int print_string_special_buffer(va_list args, char *buffer, int *index);
 int print_percent_buffer(va_list args, char *buffer, int *index);
 int print_number_buffer(unsigned int num, char *buffer, int *index);
 int print_integer_buffer(va_list args, char *buffer, int *index);
