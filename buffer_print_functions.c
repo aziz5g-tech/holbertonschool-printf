@@ -188,4 +188,11 @@ int print_string_special_buffer(va_list args, char *buffer, int *index)
 char *str = va_arg(args, char *);
     int count = 0;
     int i;
+
+    if (!str)
+        str = "(null)";
+
+    for (i = 0; str[i]; i++)
+    {
+    }
 }
