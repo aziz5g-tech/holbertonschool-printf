@@ -220,4 +220,5 @@ char *str = va_arg(args, char *);
             count++;
         }
     }
+    return (count);
 }
