@@ -15,6 +15,8 @@ static int handle_specifier_buffer(char c, va_list args, char *buffer, int *inde
 		return (print_char_buffer(args, buffer, index));
 	else if (c == 's')
 		return (print_string_buffer(args, buffer, index));
+	else if (c == 'S')
+		return (print_string_special_buffer(args, buffer, index));
 	else if (c == '%')
 		return (print_percent_buffer(args, buffer, index));
 	else if (c == 'd' || c == 'i')
