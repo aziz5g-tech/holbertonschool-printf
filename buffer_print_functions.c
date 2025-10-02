@@ -194,5 +194,30 @@ char *str = va_arg(args, char *);
 
     for (i = 0; str[i]; i++)
     {
+      if (str[i] > 0 && (str[i] < 32 || str[i] >= 127))
+        {
+            /* Print non-printable character as \xXX */
+            add_to_buffer('\\', buffer, index);
+            add_to_buffer('x', buffer, index);
+            
+            /* Print hex digits (uppercase, always 2 characters) */
+            if ((str[i] / 16) < 10)
+                add_to_buffer((str[i] / 16) + '0', buffer, index);
+            else
+                add_to_buffer((str[i] / 16) - 10 + 'A', buffer, index);
+                
+            if ((str[i] % 16) < 10)
+                add_to_buffer((str[i] % 16) + '0', buffer, index);
+            else
+                add_to_buffer((str[i] % 16) - 10 + 'A', buffer, index);
+                
+            count += 4;
+        }
+        else
+        {
+            /* Print normal printable character */
+            add_to_buffer(str[i], buffer, index);
+            count++;
+        }
     }
 }
