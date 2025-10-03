@@ -9,7 +9,8 @@
  *
  * Return: The number of printed characters for the specifier
  */
-static int handle_specifier_buffer(char c, va_list args, char *buffer, int *index)
+static int handle_specifier_buffer(char c, va_list args,
+	char *buffer, int *index)
 {
 	if (c == 'c')
 		return (print_char_buffer(args, buffer, index));
@@ -24,6 +25,7 @@ static int handle_specifier_buffer(char c, va_list args, char *buffer, int *inde
 	else if (c == 'b')
 	{
 		unsigned int n = va_arg(args, unsigned int);
+
 		return (print_binary_buffer(n, buffer, index));
 	}
 	else if (c == 'u')
@@ -31,16 +33,19 @@ static int handle_specifier_buffer(char c, va_list args, char *buffer, int *inde
 	else if (c == 'o')
 	{
 		unsigned int n = va_arg(args, unsigned int);
+
 		return (print_octal_buffer(n, buffer, index));
 	}
 	else if (c == 'x')
 	{
 		unsigned int n = va_arg(args, unsigned int);
+
 		return (print_hex_buffer(n, buffer, index, 0));
 	}
 	else if (c == 'X')
 	{
 		unsigned int n = va_arg(args, unsigned int);
+
 		return (print_hex_buffer(n, buffer, index, 1));
 	}
 
