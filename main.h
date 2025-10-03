@@ -35,7 +35,9 @@ int print_number_buffer(unsigned int num, char *buffer, int *index);
 int print_integer_buffer(va_list args, char *buffer, int *index);
 int print_unsigned_buffer(va_list args, char *buffer, int *index);
 int print_octal_buffer(unsigned int num, char *buffer, int *index);
-int print_hex_buffer(unsigned int num, char *buffer, int *index, int uppercase);
+int print_hex_buffer(unsigned int num, char *buffer,
+    int *index, int uppercase);
+
 
 /* Helper functions */
 int _putchar(char c);
