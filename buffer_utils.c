@@ -9,14 +9,15 @@
  */
 int flush_buffer(char *buffer, int *index)
 {
-    int written = 0;
+	int written = 0;
 
-    if (*index > 0)
-    {
-        written = write(1, buffer, *index);
-        *index = 0;
-    }
-    return (written);
+	if (*index > 0)
+	{
+		written = write(1, buffer, *index);
+		*index = 0;
+	}
+
+	return (written);
 }
 
 /**
@@ -29,9 +30,12 @@ int flush_buffer(char *buffer, int *index)
  */
 int add_to_buffer(char c, char *buffer, int *index)
 {
-    if (*index >= BUFFER_SIZE)
-        flush_buffer(buffer, index);
+	if (*index >= BUFFER_SIZE)
+	{
+		flush_buffer(buffer, index);
+	}
 
-    buffer[(*index)++] = c;
-    return (1);
+	buffer[(*index)++] = c;
+
+	return (1);
 }
