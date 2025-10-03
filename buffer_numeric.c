@@ -10,16 +10,13 @@
  */
 int print_number_buffer(unsigned int num, char *buffer, int *index)
 {
-	int count = 0;
+int count = 0;
 
-	if (num / 10)
-	{
-		count += print_number_buffer(num / 10, buffer, index);
-	}
+if (num / 10)
+count += print_number_buffer(num / 10, buffer, index);
 
-	add_to_buffer((num % 10) + '0', buffer, index);
-
-	return (count + 1);
+add_to_buffer((num % 10) + '0', buffer, index);
+return (count + 1);
 }
 
 /**
@@ -32,24 +29,23 @@ int print_number_buffer(unsigned int num, char *buffer, int *index)
  */
 int print_integer_buffer(va_list args, char *buffer, int *index)
 {
-	int n = va_arg(args, int);
-	unsigned int num;
-	int count = 0;
+int n = va_arg(args, int);
+unsigned int num;
+int count = 0;
 
-	if (n < 0)
-	{
-		add_to_buffer('-', buffer, index);
-		count++;
-		num = (unsigned int)(-(n + 1)) + 1;
-	}
-	else
-	{
-		num = n;
-	}
+if (n < 0)
+{
+add_to_buffer('-', buffer, index);
+count++;
+num = (unsigned int)(-(n + 1)) + 1;
+}
+else
+{
+num = n;
+}
 
-	count += print_number_buffer(num, buffer, index);
-
-	return (count);
+count += print_number_buffer(num, buffer, index);
+return (count);
 }
 
 /**
@@ -62,9 +58,9 @@ int print_integer_buffer(va_list args, char *buffer, int *index)
  */
 int print_unsigned_buffer(va_list args, char *buffer, int *index)
 {
-	unsigned int num = va_arg(args, unsigned int);
+unsigned int num = va_arg(args, unsigned int);
 
-	return (print_number_buffer(num, buffer, index));
+return (print_number_buffer(num, buffer, index));
 }
 
 /**
@@ -77,16 +73,13 @@ int print_unsigned_buffer(va_list args, char *buffer, int *index)
  */
 int print_octal_buffer(unsigned int num, char *buffer, int *index)
 {
-	int count = 0;
+int count = 0;
 
-	if (num / 8)
-	{
-		count += print_octal_buffer(num / 8, buffer, index);
-	}
+if (num / 8)
+count += print_octal_buffer(num / 8, buffer, index);
 
-	add_to_buffer((num % 8) + '0', buffer, index);
-
-	return (count + 1);
+add_to_buffer((num % 8) + '0', buffer, index);
+return (count + 1);
 }
 
 /**
@@ -100,24 +93,17 @@ int print_octal_buffer(unsigned int num, char *buffer, int *index)
  */
 int print_hex_buffer(unsigned int num, char *buffer, int *index, int uppercase)
 {
-	int count = 0;
-	char hex_char;
+int count = 0;
+char hex_char;
 
-	if (num / 16)
-	{
-		count += print_hex_buffer(num / 16, buffer, index, uppercase);
-	}
+if (num / 16)
+count += print_hex_buffer(num / 16, buffer, index, uppercase);
 
-	if ((num % 16) < 10)
-	{
-		hex_char = (num % 16) + '0';
-	}
-	else
-	{
-		hex_char = (num % 16) - 10 + (uppercase ? 'A' : 'a');
-	}
+if ((num % 16) < 10)
+hex_char = (num % 16) + '0';
+else
+hex_char = (num % 16) - 10 + (uppercase ? 'A' : 'a');
 
-	add_to_buffer(hex_char, buffer, index);
-
-	return (count + 1);
+add_to_buffer(hex_char, buffer, index);
+return (count + 1);
 }

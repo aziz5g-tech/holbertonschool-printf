@@ -10,13 +10,16 @@
  */
 int print_binary_buffer(unsigned int n, char *buffer, int *index)
 {
-    int count = 0;
+	int count = 0;
 
-    if (n > 1)
-        count += print_binary_buffer(n / 2, buffer, index);
+	if (n > 1)
+	{
+		count += print_binary_buffer(n / 2, buffer, index);
+	}
 
-    add_to_buffer((n % 2) + '0', buffer, index);
-    return (count + 1);
+	add_to_buffer((n % 2) + '0', buffer, index);
+
+	return (count + 1);
 }
 
 /**
@@ -29,10 +32,11 @@ int print_binary_buffer(unsigned int n, char *buffer, int *index)
  */
 int print_char_buffer(va_list args, char *buffer, int *index)
 {
-    char c = va_arg(args, int);
+	char c = va_arg(args, int);
 
-    add_to_buffer(c, buffer, index);
-    return (1);
+	add_to_buffer(c, buffer, index);
+
+	return (1);
 }
 
 /**
@@ -45,19 +49,22 @@ int print_char_buffer(va_list args, char *buffer, int *index)
  */
 int print_string_buffer(va_list args, char *buffer, int *index)
 {
-    char *str = va_arg(args, char *);
-    int count = 0;
+	char *str = va_arg(args, char *);
+	int count = 0;
 
-    if (!str)
-        str = "(null)";
+	if (!str)
+	{
+		str = "(null)";
+	}
 
-    while (*str)
-    {
-        add_to_buffer(*str, buffer, index);
-        str++;
-        count++;
-    }
-    return (count);
+	while (*str)
+	{
+		add_to_buffer(*str, buffer, index);
+		str++;
+		count++;
+	}
+
+	return (count);
 }
 
 /**
@@ -70,9 +77,10 @@ int print_string_buffer(va_list args, char *buffer, int *index)
  */
 int print_percent_buffer(va_list args, char *buffer, int *index)
 {
-    (void)args;
-    add_to_buffer('%', buffer, index);
-    return (1);
+	(void)args;
+	add_to_buffer('%', buffer, index);
+
+	return (1);
 }
 
 /**
@@ -85,40 +93,51 @@ int print_percent_buffer(va_list args, char *buffer, int *index)
  */
 int print_string_special_buffer(va_list args, char *buffer, int *index)
 {
-    char *str = va_arg(args, char *);
-    int count = 0;
-    int i;
+	char *str = va_arg(args, char *);
+	int count = 0;
+	int i;
 
-    if (!str)
-        str = "(null)";
+	if (!str)
+	{
+		str = "(null)";
+	}
 
-    for (i = 0; str[i]; i++)
-    {
-        if (str[i] > 0 && (str[i] < 32 || str[i] >= 127))
-        {
-            /* Print non-printable character as \xXX */
-            add_to_buffer('\\', buffer, index);
-            add_to_buffer('x', buffer, index);
+	for (i = 0; str[i]; i++)
+	{
+		if (str[i] > 0 && (str[i] < 32 || str[i] >= 127))
+		{
+			/* Print non-printable character as \xXX */
+			add_to_buffer('\\', buffer, index);
+			add_to_buffer('x', buffer, index);
 
-            /* Print hex digits (uppercase, always 2 characters) */
-            if ((str[i] / 16) < 10)
-                add_to_buffer((str[i] / 16) + '0', buffer, index);
-            else
-                add_to_buffer((str[i] / 16) - 10 + 'A', buffer, index);
+			/* Print hex digits (uppercase, always 2 characters) */
+			if ((str[i] / 16) < 10)
+			{
+				add_to_buffer((str[i] / 16) + '0', buffer, index);
+			}
+			else
+			{
+				add_to_buffer((str[i] / 16) - 10 + 'A', buffer, index);
+			}
 
-            if ((str[i] % 16) < 10)
-                add_to_buffer((str[i] % 16) + '0', buffer, index);
-            else
-                add_to_buffer((str[i] % 16) - 10 + 'A', buffer, index);
+			if ((str[i] % 16) < 10)
+			{
+				add_to_buffer((str[i] % 16) + '0', buffer, index);
+			}
+			else
+			{
+				add_to_buffer((str[i] % 16) - 10 + 'A', buffer, index);
+			}
 
-            count += 4;
-        }
-        else
-        {
-            /* Print normal printable character */
-            add_to_buffer(str[i], buffer, index);
-            count++;
-        }
-    }
-    return (count);
+			count += 4;
+		}
+		else
+		{
+			/* Print normal printable character */
+			add_to_buffer(str[i], buffer, index);
+			count++;
+		}
+	}
+
+	return (count);
 }
