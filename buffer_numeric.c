@@ -13,7 +13,7 @@ int print_number_buffer(unsigned int num, char *buffer, int *index)
     int count = 0;
 
     if (num / 10)
-        count += print_number_buffer(num / 10, buffer, index);
+    count += print_number_buffer(num / 10, buffer, index);
 
     add_to_buffer((num % 10) + '0', buffer, index);
     return (count + 1);
@@ -35,13 +35,13 @@ int print_integer_buffer(va_list args, char *buffer, int *index)
 
     if (n < 0)
     {
-        add_to_buffer('-', buffer, index);
-        count++;
-        num = (unsigned int)(-(n + 1)) + 1;
+    add_to_buffer('-', buffer, index);
+    count++;
+    num = (unsigned int)(-(n + 1)) + 1;
     }
     else
     {
-        num = n;
+    num = n;
     }
 
     count += print_number_buffer(num, buffer, index);
