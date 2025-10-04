@@ -45,6 +45,8 @@ int _putchar(char c);
 #define FLAG_PLUS   (1 << 0)
 #define FLAG_SPACE  (1 << 1)
 #define FLAG_HASH   (1 << 2)
+/* Exposes the current flags to number-printing routines. */
+extern int g_flags; /* NEW */
 
 /* helper to apply prefixes/signs before digits */
 int buffer_apply_numeric_flags(long is_neg, unsigned long val,
