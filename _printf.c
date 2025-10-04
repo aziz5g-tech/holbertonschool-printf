@@ -80,7 +80,9 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == '%')
 		{
-			/* End of string with a lone '%' -> error. */
+			int j; /* index of first char after '%' */
+
+			/* Lone trailing '%' is an error. */
 			if (!format[i + 1])
 			{
 				flush_buffer(buffer, &buffer_index);
@@ -88,12 +90,12 @@ int _printf(const char *format, ...)
 				return (-1);
 			}
 
-			i++; /* We saw '%' and advanced. */
+			i++;           /* We saw '%' and advanced. */
+			j = i;         /* Remember the first char after '%' */
 
 			/* Parse flags (+, space, #) before the specifier. */
 			g_flags = 0;
-			while (format[i] == '+' || format[i] == ' ' ||
-			       format[i] == '#')
+			while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
 			{
 				if (format[i] == '+')
 					g_flags |= FLAG_PLUS;
@@ -102,6 +104,20 @@ int _printf(const char *format, ...)
 				else /* '#' */
 					g_flags |= FLAG_HASH;
 				i++;
+			}
+
+			/* Fallback: no valid specifier after flags -> print "%<first>" */
+			if (format[i] == '\0' ||
+			    !(format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
+			      format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
+			      format[i] == 'b' || format[i] == 'u' || format[i] == 'o' ||
+			      format[i] == 'x' || format[i] == 'X'))
+			{
+				add_to_buffer('%', buffer, &buffer_index);
+				add_to_buffer(format[j], buffer, &buffer_index);
+				count += 2;
+				i = j;   /* resume scanning after the literal char */
+				continue;
 			}
 
 			/* Delegate printing with flags available via g_flags. */
