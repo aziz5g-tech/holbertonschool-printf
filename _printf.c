@@ -11,8 +11,7 @@ int g_flags = 0;
  * @index: pointer to buffer index
  * Return: number of characters produced
  */
-static int handle_specifier_buffer(char c, va_list args,
-				   char *buffer, int *index)
+static int handle_specifier_buffer(char c, va_list args,char *buffer, int *index)
 {
 	if (c == 'c')
 		return (print_char_buffer(args, buffer, index));
@@ -27,7 +26,6 @@ static int handle_specifier_buffer(char c, va_list args,
 	else
 		return (handle_unsigned_specifiers(c, args, buffer, index));
 }
-
 /**
  * handle_unsigned_specifiers - handles unsigned, octal, hex, binary
  * @c: specifier character
@@ -36,8 +34,7 @@ static int handle_specifier_buffer(char c, va_list args,
  * @index: pointer to buffer index
  * Return: number of characters produced
  */
-static int handle_unsigned_specifiers(char c, va_list args,
-				      char *buffer, int *index)
+static int handle_unsigned_specifiers(char c, va_list args,char *buffer, int *index)
 {
 	unsigned int n;
 
@@ -64,13 +61,6 @@ static int handle_unsigned_specifiers(char c, va_list args,
 	add_to_buffer(c, buffer, index);
 	return (2);
 }
-
-	/* Unknown specifier: print it verbatim. */
-	add_to_buffer('%', buffer, index);
-	add_to_buffer(c, buffer, index);
-	return (2);
-}
-
 /**
  * _printf - prints a formatted string
  * @format: format string
