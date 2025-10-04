@@ -1,4 +1,5 @@
 #include "main.h"
+
 /* Global bitmask for flags of the current '%' sequence. */
 int g_flags = 0;
 
@@ -9,10 +10,10 @@ int g_flags = 0;
  * @buffer: the buffer to use
  * @index: pointer to buffer index
  *
- * Return: The number of printed characters for the specifier
+ * Return: number of printed characters for the specifier
  */
 static int handle_specifier_buffer(char c, va_list args,
-	char *buffer, int *index)
+				   char *buffer, int *index)
 {
 	if (c == 'c')
 		return (print_char_buffer(args, buffer, index));
@@ -51,6 +52,7 @@ static int handle_specifier_buffer(char c, va_list args,
 		return (print_hex_buffer(n, buffer, index, 1));
 	}
 
+	/* Unknown specifier: print it verbatim. */
 	add_to_buffer('%', buffer, index);
 	add_to_buffer(c, buffer, index);
 	return (2);
@@ -60,7 +62,7 @@ static int handle_specifier_buffer(char c, va_list args,
  * _printf - prints a formatted string
  * @format: the string to format
  *
- * Return: The number of printed characters, or -1 if format is NULL
+ * Return: number of printed characters, or -1 if format is NULL
  */
 int _printf(const char *format, ...)
 {
@@ -78,14 +80,33 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == '%')
 		{
+			/* End of string with a lone '%' -> error. */
 			if (!format[i + 1])
 			{
 				flush_buffer(buffer, &buffer_index);
 				va_end(args);
 				return (-1);
 			}
-			i++;
-			count += handle_specifier_buffer(format[i], args, buffer, &buffer_index);
+
+			i++; /* We saw '%' and advanced. */
+
+			/* Parse flags (+, space, #) before the specifier. */
+			g_flags = 0;
+			while (format[i] == '+' || format[i] == ' ' ||
+			       format[i] == '#')
+			{
+				if (format[i] == '+')
+					g_flags |= FLAG_PLUS;
+				else if (format[i] == ' ')
+					g_flags |= FLAG_SPACE;
+				else /* '#' */
+					g_flags |= FLAG_HASH;
+				i++;
+			}
+
+			/* Delegate printing with flags available via g_flags. */
+			count += handle_specifier_buffer(format[i], args,
+							 buffer, &buffer_index);
 		}
 		else
 		{
@@ -98,21 +119,3 @@ int _printf(const char *format, ...)
 	va_end(args);
 	return (count);
 }
-i++; /* We saw '%' and advanced. */
-
-/* Parse flags (+, space, #) after '%' and before the specifier. */
-g_flags = 0;
-while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
-{
-    if (format[i] == '+')
-        g_flags |= FLAG_PLUS;
-    else if (format[i] == ' ')
-        g_flags |= FLAG_SPACE;
-    else /* '#' */
-        g_flags |= FLAG_HASH;
-    i++;
-}
-
-/* Delegate printing with the parsed flags (via g_flags). */
-count += handle_specifier_buffer(format[i], args, buffer, &buffer_index);
-
