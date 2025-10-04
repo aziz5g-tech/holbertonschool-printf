@@ -1,4 +1,6 @@
 #include "main.h"
+/* Global bitmask for flags of the current '%' sequence. */
+int g_flags = 0;
 
 /**
  * handle_specifier_buffer - handles format specifiers with buffer
