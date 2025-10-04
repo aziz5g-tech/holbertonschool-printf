@@ -106,30 +106,8 @@ int _printf(const char *format, ...)
 				i++;
 			}
 
-			/* If specifier is unsupported by flags, treat first char as literal. */
+			/* If no valid specifier after flags, print '%' and reprocess j. */
 			if (format[i] == '\0' ||
-			    format[i] == '%' || format[i] == 'c' ||
-			    format[i] == 's' || format[i] == 'S' || format[i] == 'b')
-			{
-				add_to_buffer('%', buffer, &buffer_index);
-				add_to_buffer(format[j], buffer, &buffer_index);
-				count += 2;
-				i = j;   /* resume after the literal char */
-				continue;
-			}
-
-			/* Delegate printing with flags available via g_flags. */
-			count += handle_specifier_buffer(format[i], args,
-							 buffer, &buffer_index);
-		}
-		else
-		{
-			add_to_buffer(format[i], buffer, &buffer_index);
-			count++;
-		}
-	}
-
-	flush_buffer(buffer, &buffer_index);
-	va_end(args);
-	return (count);
-}
+			    !(format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
+			      format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
+			      form
