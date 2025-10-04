@@ -91,8 +91,8 @@ int _printf(const char *format, ...)
 				return (-1);
 			}
 
-			i++;  /* We saw '%' and advanced. */
-			j = i;
+			i++;      /* We saw '%' and advanced. */
+			j = i;    /* Remember the first char after '%' */
 
 			/* Parse flags (+, space, #) before the specifier. */
 			g_flags = 0;
@@ -107,7 +107,7 @@ int _printf(const char *format, ...)
 				i++;
 			}
 
-			/* Check whether a supported specifier follows the flags. */
+			/* Is there a supported specifier after the flags? */
 			has_spec = 0;
 			if (format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
 			    format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
@@ -115,13 +115,13 @@ int _printf(const char *format, ...)
 			    format[i] == 'x' || format[i] == 'X')
 				has_spec = 1;
 
-			/* Fallback: only flags then non-spec -> print '%' only. */
+			/* Fallback: only flags (e.g. "% ") -> print "%<first>" and continue */
 			if (!has_spec || format[i] == '\0')
 			{
 				add_to_buffer('%', buffer, &buffer_index);
-				count += 1;
-				/* Re-process the first char after '%' normally. */
-				i = j - 1;
+				add_to_buffer(format[j], buffer, &buffer_index);
+				count += 2;
+				i = j;   /* continue scanning after that first char */
 				continue;
 			}
 
