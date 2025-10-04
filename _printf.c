@@ -4,12 +4,14 @@
 int g_flags = 0;
 
 /**
- * handle_specifier_buffer - handles format specifiers with buffer
- * @c: specifier character
- * @args: argument list
+ * handle_specifier_buffer - dispatches a single conversion to the proper
+ *                           buffered printer
+ * @c:      conversion specifier
+ * @args:   variadic argument list
  * @buffer: output buffer
- * @index: pointer to buffer index
- * Return: number of characters produced
+ * @index:  pointer to current buffer index
+ *
+ * Return: number of output characters produced for this specifier
  */
 static int handle_specifier_buffer(char c, va_list args,
 				   char *buffer, int *index)
@@ -51,16 +53,17 @@ static int handle_specifier_buffer(char c, va_list args,
 		return (print_hex_buffer(n, buffer, index, 1));
 	}
 
-	/* Unknown specifier: print it verbatim. */
+	/* Unknown specifier: print it literally as "%<c>" */
 	add_to_buffer('%', buffer, index);
 	add_to_buffer(c, buffer, index);
 	return (2);
 }
 
 /**
- * _printf - prints a formatted string
+ * _printf - minimalist printf with buffered output
  * @format: format string
- * Return: printed length, or -1 on error
+ *
+ * Return: number of printed characters, or -1 on error
  */
 int _printf(const char *format, ...)
 {
@@ -78,10 +81,9 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == '%')
 		{
-			int j, k;       /* j: first char after '%', k: look-ahead index */
-			int has_spec;   /* 1 if a valid specifier found after flags */
+			int j, k, has_spec;
 
-			/* Lone trailing '%' -> error */
+			/* lone trailing '%' is invalid */
 			if (!format[i + 1])
 			{
 				flush_buffer(buffer, &buffer_index);
@@ -89,27 +91,37 @@ int _printf(const char *format, ...)
 				return (-1);
 			}
 
-			i++;            /* We saw '%' and advanced. */
+			/* move past '%' and remember the first char after it */
+			i++;
 			j = i;
 
 			/*
-			 * Look ahead to the eventual specifier to decide
-			 * whether a leading space should be treated as a flag.
+			 * LOOK-AHEAD:
+			 * Skip any flags to see the eventual specifier at position k.
+			 * If the very first char after '%' is a space but the final
+			 * specifier is NOT 'd' or 'i', we should NOT treat the space as a
+			 * flag: print only '%' now and let the spaces be handled as normal
+			 * characters on the next loop iterations.
 			 */
 			k = i;
 			while (format[k] == '+' || format[k] == ' ' || format[k] == '#')
 				k++;
 
-			/* If first is space but final specifier isn't d/i: print '%' only now. */
 			if (format[i] == ' ' && !(format[k] == 'd' || format[k] == 'i'))
 			{
 				add_to_buffer('%', buffer, &buffer_index);
 				count += 1;
-				i = j - 1;    /* next loop will print the space normally */
+
+				/* skip all consecutive spaces after '%' */
+				while (format[i] == ' ')
+					i++;
+
+				/* step back: next loop will process the first non-space */
+				i--;
 				continue;
 			}
 
-			/* Parse flags (+, space, #) before the specifier. */
+			/* parse flags (+, space, #) */
 			g_flags = 0;
 			while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
 			{
@@ -122,7 +134,7 @@ int _printf(const char *format, ...)
 				i++;
 			}
 
-			/* Validate that we actually have a supported specifier now. */
+			/* validate that we have a supported specifier */
 			has_spec = 0;
 			if (format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
 			    format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
@@ -130,17 +142,21 @@ int _printf(const char *format, ...)
 			    format[i] == 'x' || format[i] == 'X')
 				has_spec = 1;
 
-			/* If nothing valid after flags, print "%<first-after-%>" and continue. */
+			/*
+			 * If no valid specifier follows the flags, print "%<first-after-%>"
+			 * literally, then continue parsing from that character.
+			 * This also safely covers a dangling "% " at end of string.
+			 */
 			if (!has_spec || format[i] == '\0')
 			{
 				add_to_buffer('%', buffer, &buffer_index);
 				add_to_buffer(format[j], buffer, &buffer_index);
 				count += 2;
-				i = j; /* resume scanning from that character */
+				i = j;
 				continue;
 			}
 
-			/* Delegate printing (flags available via g_flags). */
+			/* delegate to the per-specifier printer */
 			count += handle_specifier_buffer(format[i], args,
 							 buffer, &buffer_index);
 		}
