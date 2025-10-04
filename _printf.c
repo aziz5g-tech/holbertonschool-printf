@@ -96,3 +96,6 @@ int _printf(const char *format, ...)
 	va_end(args);
 	return (count);
 }
+/* قبل بدء تحليل كل specifier */
+int flags = 0;
+
