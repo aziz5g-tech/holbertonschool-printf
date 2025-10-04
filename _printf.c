@@ -28,6 +28,7 @@ static int handle_specifier_buffer(char c, va_list args,
 	else if (c == 'b')
 	{
 		unsigned int n = va_arg(args, unsigned int);
+
 		return (print_binary_buffer(n, buffer, index));
 	}
 	else if (c == 'u')
@@ -35,16 +36,19 @@ static int handle_specifier_buffer(char c, va_list args,
 	else if (c == 'o')
 	{
 		unsigned int n = va_arg(args, unsigned int);
+
 		return (print_octal_buffer(n, buffer, index));
 	}
 	else if (c == 'x')
 	{
 		unsigned int n = va_arg(args, unsigned int);
+
 		return (print_hex_buffer(n, buffer, index, 0));
 	}
 	else if (c == 'X')
 	{
 		unsigned int n = va_arg(args, unsigned int);
+
 		return (print_hex_buffer(n, buffer, index, 1));
 	}
 
@@ -76,6 +80,10 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == '%')
 		{
+			int j;        /* first char after '%' */
+			int saw_space;/* saw ' ' flag while scanning */
+			int has_spec; /* 1 if a valid specifier follows the flags */
+
 			/* Lone trailing '%' is an error. */
 			if (!format[i + 1])
 			{
@@ -84,47 +92,60 @@ int _printf(const char *format, ...)
 				return (-1);
 			}
 
-			/* Move past '%' */
-			i++;
-
-			/* SPECIAL-CASE: "% " or "% <space>%" -> print "% " literally. */
-			if (format[i] == ' ' &&
-			    (format[i + 1] == '%' || format[i + 1] == '\0'))
-			{
-				add_to_buffer('%', buffer, &buffer_index);
-				add_to_buffer(' ', buffer, &buffer_index);
-				count += 2;
-
-				/* Continue: for-loop will advance from the space. */
-				continue;
-			}
+			i++;       /* We saw '%' and advanced. */
+			j = i;     /* Remember first char after '%' */
 
 			/* Parse flags (+, space, #) before the specifier. */
 			g_flags = 0;
+			saw_space = 0;
 			while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
 			{
 				if (format[i] == '+')
 					g_flags |= FLAG_PLUS;
 				else if (format[i] == ' ')
+				{
 					g_flags |= FLAG_SPACE;
+					saw_space = 1;
+				}
 				else /* '#' */
 					g_flags |= FLAG_HASH;
 				i++;
 			}
 
-			/* If after flags there's no valid specifier, print it literally. */
-			if (!(format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
-			      format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
-			      format[i] == 'b' || format[i] == 'u' || format[i] == 'o' ||
-			      format[i] == 'x' || format[i] == 'X'))
+			/* Is there a supported specifier after the flags? */
+			has_spec = 0;
+			if (format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
+			    format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
+			    format[i] == 'b' || format[i] == 'u' || format[i] == 'o' ||
+			    format[i] == 'x' || format[i] == 'X')
+				has_spec = 1;
+
+			/* If there is NO specifier (e.g. "% "): print "%<first>" and continue */
+			if (!has_spec || format[i] == '\0')
 			{
 				add_to_buffer('%', buffer, &buffer_index);
-				add_to_buffer(format[i], buffer, &buffer_index);
+				add_to_buffer(format[j], buffer, &buffer_index);
 				count += 2;
+				i = j;   /* resume scanning from that first char */
 				continue;
 			}
 
-			/* Delegate printing (flags available via g_flags). */
+			/*
+			 * If the specifier exists but the ' ' flag doesn't apply to it
+			 * (i.e., specifier is NOT 'd' or 'i'), we must not swallow the
+			 * space. Print "% " literally and re-process the specifier next.
+			 * This fixes cases like "% " and "% % % % ".
+			 */
+			if (saw_space && !(format[i] == 'd' || format[i] == 'i'))
+			{
+				add_to_buffer('%', buffer, &buffer_index);
+				add_to_buffer(' ', buffer, &buffer_index);
+				count += 2;
+				i = j;   /* step back to let next loop see the specifier */
+				continue;
+			}
+
+			/* Delegate printing with flags available via g_flags. */
 			count += handle_specifier_buffer(format[i], args,
 							 buffer, &buffer_index);
 		}
