@@ -46,5 +46,8 @@ int _putchar(char c);
 #define FLAG_SPACE  (1 << 1)
 #define FLAG_HASH   (1 << 2)
 
+/* helper to apply prefixes/signs before digits */
+int buffer_apply_numeric_flags(long is_neg, unsigned long val,
+                               int base, int uppercase, int flags);
 
 #endif
