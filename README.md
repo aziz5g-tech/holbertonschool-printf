@@ -91,4 +91,4 @@ man_3_printf – manual page for _printf
 Authors
 
 Project for Holberton School — _printf” team 
-Lina (linawsm52), Aziz (aziz5g-tech), Nourah (noneals)
+Lina (linawsm52), Abdulaziz (aziz5g-tech), Nourah (noneals)
