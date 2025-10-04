@@ -96,4 +96,21 @@ int _printf(const char *format, ...)
 	va_end(args);
 	return (count);
 }
+i++; /* We saw '%' and advanced. */
+
+/* Parse flags (+, space, #) after '%' and before the specifier. */
+g_flags = 0;
+while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
+{
+    if (format[i] == '+')
+        g_flags |= FLAG_PLUS;
+    else if (format[i] == ' ')
+        g_flags |= FLAG_SPACE;
+    else /* '#' */
+        g_flags |= FLAG_HASH;
+    i++;
+}
+
+/* Delegate printing with the parsed flags (via g_flags). */
+count += handle_specifier_buffer(format[i], args, buffer, &buffer_index);
 
