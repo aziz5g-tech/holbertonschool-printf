@@ -80,9 +80,7 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == '%')
 		{
-			int j;        /* first char after '%' */
-			int saw_space;/* saw ' ' flag while scanning */
-			int has_spec; /* 1 if a valid specifier follows the flags */
+			int j, k, has_spec;
 
 			/* Lone trailing '%' is an error. */
 			if (!format[i + 1])
@@ -92,27 +90,46 @@ int _printf(const char *format, ...)
 				return (-1);
 			}
 
-			i++;       /* We saw '%' and advanced. */
-			j = i;     /* Remember first char after '%' */
+			i++;          /* We saw '%' and advanced. */
+			j = i;        /* First char after '%' */
+
+			/*
+			 * SPECIAL CASE for "% " and sequences like "% % % % ":
+			 * If spaces follow '%' but the next non-space is NOT 'd'/'i',
+			 * print "% " literally (one space) and continue.
+			 * If the next non-space is 'd'/'i', treat spaces as the ' ' flag.
+			 */
+			if (format[i] == ' ')
+			{
+				k = i;
+				while (format[k] == ' ')
+					k++;
+
+				if (!(format[k] == 'd' || format[k] == 'i'))
+				{
+					add_to_buffer('%', buffer, &buffer_index);
+					add_to_buffer(' ', buffer, &buffer_index);
+					count += 2;
+					/* do not swallow more; for-loop will move past this space */
+					continue;
+				}
+				/* else: fall through to parse flags normally */
+			}
 
 			/* Parse flags (+, space, #) before the specifier. */
 			g_flags = 0;
-			saw_space = 0;
 			while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
 			{
 				if (format[i] == '+')
 					g_flags |= FLAG_PLUS;
 				else if (format[i] == ' ')
-				{
 					g_flags |= FLAG_SPACE;
-					saw_space = 1;
-				}
 				else /* '#' */
 					g_flags |= FLAG_HASH;
 				i++;
 			}
 
-			/* Is there a supported specifier after the flags? */
+			/* Validate that we actually have a supported specifier now. */
 			has_spec = 0;
 			if (format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
 			    format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
@@ -120,28 +137,13 @@ int _printf(const char *format, ...)
 			    format[i] == 'x' || format[i] == 'X')
 				has_spec = 1;
 
-			/* If there is NO specifier (e.g. "% "): print "%<first>" and continue */
+			/* If nothing valid after flags, print "%<first-after-%>" and continue. */
 			if (!has_spec || format[i] == '\0')
 			{
 				add_to_buffer('%', buffer, &buffer_index);
 				add_to_buffer(format[j], buffer, &buffer_index);
 				count += 2;
-				i = j;   /* resume scanning from that first char */
-				continue;
-			}
-
-			/*
-			 * If the specifier exists but the ' ' flag doesn't apply to it
-			 * (i.e., specifier is NOT 'd' or 'i'), we must not swallow the
-			 * space. Print "% " literally and re-process the specifier next.
-			 * This fixes cases like "% " and "% % % % ".
-			 */
-			if (saw_space && !(format[i] == 'd' || format[i] == 'i'))
-			{
-				add_to_buffer('%', buffer, &buffer_index);
-				add_to_buffer(' ', buffer, &buffer_index);
-				count += 2;
-				i = j;   /* step back to let next loop see the specifier */
+				i = j;   /* resume scanning from that character */
 				continue;
 			}
 
