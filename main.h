@@ -41,5 +41,10 @@ int print_hex_buffer(unsigned int num, char *buffer,
 
 /* Helper functions */
 int _putchar(char c);
+/* === flags bitmask === */
+#define FLAG_PLUS   (1 << 0)
+#define FLAG_SPACE  (1 << 1)
+#define FLAG_HASH   (1 << 2)
+
 
 #endif
