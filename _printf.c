@@ -98,4 +98,12 @@ int _printf(const char *format, ...)
 }
 /* قبل بدء تحليل كل specifier */
 int flags = 0;
+/* داخل لوب قراءة الـ flags قبل الـ width/precision/type */
+while (fmt[i] == '+' || fmt[i] == ' ' || fmt[i] == '#')
+{
+    if (fmt[i] == '+') flags |= FLAG_PLUS;
+    else if (fmt[i] == ' ') flags |= FLAG_SPACE;
+    else if (fmt[i] == '#') flags |= FLAG_HASH;
+    i++;
+}
 
