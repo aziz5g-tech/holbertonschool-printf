@@ -80,7 +80,7 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == '%')
 		{
-			int j; /* index of first char after '%' */
+			int j; /* first char after '%' */
 
 			/* Lone trailing '%' is an error. */
 			if (!format[i + 1])
@@ -106,17 +106,15 @@ int _printf(const char *format, ...)
 				i++;
 			}
 
-			/* Fallback: no valid specifier after flags -> print "%<first>" */
+			/* If specifier is unsupported by flags, treat first char as literal. */
 			if (format[i] == '\0' ||
-			    !(format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
-			      format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
-			      format[i] == 'b' || format[i] == 'u' || format[i] == 'o' ||
-			      format[i] == 'x' || format[i] == 'X'))
+			    format[i] == '%' || format[i] == 'c' ||
+			    format[i] == 's' || format[i] == 'S' || format[i] == 'b')
 			{
 				add_to_buffer('%', buffer, &buffer_index);
 				add_to_buffer(format[j], buffer, &buffer_index);
 				count += 2;
-				i = j;   /* resume scanning after the literal char */
+				i = j;   /* resume after the literal char */
 				continue;
 			}
 
