@@ -1,4 +1,4 @@
-# holbertonschool-printf
+# holbertonschool_printf
 
 A buffered reimplementation of the C library `printf`.  
 Prints to **stdout** and returns the number of characters written (or `-1` on error).
@@ -60,3 +60,35 @@ Flags apply only where meaningful; e.g. + and space do not affect %u,
 
 Edge sequences like "% " or "% % % % " are printed literally as %
 (one percent followed by one space each time).
+Return Value
+
+_printf returns the number of characters printed (excluding the terminating
+null byte). If format is NULL or a fatal error occurs, -1 is returned.
+
+Examples
+_printf("%+d\n", 7);          /* +7              */
+_printf("% d\n", 7);          /*  7              */
+_printf("% d\n", -7);         /* -7 (space ignored when sign exists) */
+_printf("%#o\n", 9);          /* 011             */
+_printf("%#x\n", 48879);      /* 0xbeef          */
+_printf("%#X\n", 48879);      /* 0XBEEF          */
+_printf("% % % % \n");        /* % % % %         */
+
+Files
+
+main.h – public API, prototypes, and flag bitmasks
+
+_printf.c – core dispatcher and flag parsing
+
+buffer_*.c – buffered numeric/text helpers
+
+print_*.c – non-buffer helpers used by some specs
+
+_putchar.c – low-level write wrapper
+
+man_3_printf – manual page for _printf
+
+Authors
+
+Project for Holberton School — _printf” team 
+Lina -Abdulaziz -Nourah
