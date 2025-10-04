@@ -1,4 +1,10 @@
-.TH _printf 3 "2025-10-04" "holbertonschool-printf" "_printf manual"
+
+---
+
+## man_3_printf (جاهز للاستبدال بالكامل)
+
+```roff
+.TH _printf 3 "2025-10-04" "_printf" "_printf manual"
 .SH NAME
 _printf \- custom printf implementation with buffered output and a subset of flags
 .SH SYNOPSIS
