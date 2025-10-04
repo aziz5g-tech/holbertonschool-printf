@@ -2,59 +2,42 @@
 
 /* Global bitmask for flags of the current '%' sequence. */
 int g_flags = 0;
-
-/**
- * handle_specifier_buffer - handles format specifiers with buffer
- * @c: specifier character
- * @args: argument list
- * @buffer: output buffer
- * @index: pointer to buffer index
- * Return: number of characters produced
- */
-static int handle_specifier_buffer(char c, va_list args,char *buffer, int *index)
+/** * handle_specifier_buffer - handles format specifiers 
+with buffer * @c: specifier character
+* @args: argument list 
+* @buffer: output buffer 
+* @index: pointer to buffer index 
+* Return: number of characters produced */ 
+static int handle_specifier_buffer(char c, va_list args, char *buffer, int *index)
 {
-	if (c == 'c')
-		return (print_char_buffer(args, buffer, index));
-	else if (c == 's')
-		return (print_string_buffer(args, buffer, index));
-	else if (c == 'S')
-		return (print_string_special_buffer(args, buffer, index));
-	else if (c == '%')
-		return (print_percent_buffer(args, buffer, index));
-	else if (c == 'd' || c == 'i')
-		return (print_integer_buffer(args, buffer, index));
-	else
-		return (handle_unsigned_specifiers(c, args, buffer, index));
-}
-/**
- * handle_unsigned_specifiers - handles unsigned, octal, hex, binary
- * @c: specifier character
- * @args: argument list
- * @buffer: output buffer
- * @index: pointer to buffer index
- * Return: number of characters produced
- */
-static int handle_unsigned_specifiers(char c, va_list args,char *buffer, int *index)
-{
-	unsigned int n;
-
-	if (c == 'b')
-	{
-		n = va_arg(args, unsigned int);
-		return (print_binary_buffer(n, buffer, index));
-	}
-	else if (c == 'u')
-		return (print_unsigned_buffer(args, buffer, index));
-	else if (c == 'o')
-	{
-		n = va_arg(args, unsigned int);
-		return (print_octal_buffer(n, buffer, index));
-	}
-	else if (c == 'x' || c == 'X')
-	{
-		n = va_arg(args, unsigned int);
-		return (print_hex_buffer(n, buffer, index, c == 'X'));
-	}
+if (c == 'c') 
+	return (print_char_buffer(args, buffer, index));
+else if (c == 's') 
+	return (print_string_buffer(args, buffer, index)); 
+else if (c == 'S') 
+	return (print_string_special_buffer(args, buffer, index)); 
+else if (c == '%') 
+	return (print_percent_buffer(args, buffer, index)); 
+else if (c == 'd' || c == 'i') 
+	return (print_integer_buffer(args, buffer, index)); 
+else if (c == 'b') 
+{ 
+	unsigned int n = va_arg(args, unsigned int); 
+	return (print_binary_buffer(n, buffer, index)); 
+} 
+else if (c == 'u') 
+return (print_unsigned_buffer(args, buffer, index)); 
+else if (c == 'o') 
+{ 
+	unsigned int n = va_arg(args, unsigned int); 
+return (print_octal_buffer(n, buffer, index)); } 
+else if (c == 'x')
+{ 
+	unsigned int n = va_arg(args, unsigned int); 
+	return (print_hex_buffer(n, buffer, index, 0)); } 
+else if (c == 'X') 
+{ unsigned int n = va_arg(args, unsigned int); 
+ return (print_hex_buffer(n, buffer, index, 1)); }
 
 	/* Unknown specifier */
 	add_to_buffer('%', buffer, index);
