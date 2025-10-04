@@ -1,45 +1,95 @@
-.TH _printf 3 "September 2025" "Holberton School" "Library Functions Manual"
+.TH _printf 3 "2025-10-04" "holbertonschool-printf" "_printf manual"
 .SH NAME
-_printf \- custom implementation of the printf function
+_printf \- custom printf implementation with buffered output and a subset of flags
 .SH SYNOPSIS
+.nf
 .B #include "main.h"
-.br
 .B int _printf(const char *format, ...);
+.fi
 .SH DESCRIPTION
-The _printf function produces output according to a format string.
-.br
-This simplified version of printf supports the following conversion specifiers:
+.B _printf
+prints formatted output to standard output and returns the number of characters
+written, or \-1 on error. It supports a subset of conversion specifiers and
+three non\-length flags.
+
+The supported conversion specifiers are:
+.BR c ,
+.BR s ,
+.BR S ,
+.BR % ,
+.BR d ,
+.BR i ,
+.BR b ,
+.BR u ,
+.BR o ,
+.BR x ,
+and
+.BR X .
+
+.SH FLAGS
+The following flag characters are recognized for non\-custom conversions:
+
 .TP
-\fB%c\fP
-Print a single character.
+.B +
+For signed decimal conversions
+.BR d " and " i ,
+force a sign to be prefixed to non\-negative numbers (a leading "\+").
+The plus flag takes precedence over the space flag.
+
 .TP
-\fB%s\fP
-Print a string of characters.
+.B "space"
+For signed decimal conversions
+.BR d " and " i ,
+if no sign is going to be written, prefix a single space.
+
 .TP
-\fB%%\fP
-Print a percent sign.
-.TP
-\fB%d\fP, \fB%i\fP
-Print a signed decimal integer.
-.PP
-Flags, field width, precision and length modifiers are not handled.
+.B #
+Alternate form.
+For
+.B o
+(octal), emit a single leading
+.B 0
+for non\-zero values.
+For
+.BR x " and " X
+(hex), emit
+.B 0x
+or
+.B 0X
+respectively for non\-zero values.
+
 .SH RETURN VALUE
-Returns the number of characters printed.
-On error (such as NULL format), returns \-1.
+On success, the number of characters printed is returned.
+If
+.I format
+is NULL, or a fatal error occurs, \-1 is returned.
+
+.SH NOTES
+Flags apply only where meaningful.
+For example,
+.B +
+and the space flag do not affect
+.BR u ,
+.BR o ,
+.BR x ,
+or
+.BR X .
+.PP
+Edge sequences like
+.BR "% " ,
+or
+.BR "% % % % " ,
+are printed literally as a percent sign followed by a single space each time.
+
 .SH EXAMPLES
 .nf
-_printf("Hello %s\\n", "world");
-     => Hello world
-_printf("Char: %c\\n", 'A');
-     => Char: A
-_printf("Percent: %%\\n");
-     => Percent: %
-_printf("Number: %d\\n", 1024);
-     => Number: 1024
-_printf("Negative: %i\\n", -98);
-     => Negative: -98
+_printf("%+d\\n", 7);          /* +7        */
+_printf("% d\\n", 7);          /*  7        */
+_printf("%#o\\n", 9);          /* 011       */
+_printf("%#x\\n", 48879);      /* 0xbeef    */
+_printf("%#X\\n", 48879);      /* 0XBEEF    */
+_printf("% % % % \\n");        /* % % % %   */
 .fi
-.SH SEE ALSO
-printf(3)
+
 .SH AUTHORS
 Lina (linawsm52), Aziz (aziz5g-tech), Nourah (noneals)
