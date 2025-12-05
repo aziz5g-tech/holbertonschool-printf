@@ -14,6 +14,19 @@ int print_octal_formatted(unsigned long num, char *buffer, int *index)
 
     num_digits = count_octal_digits(num);
 
+    /* Special case: precision 0 with value 0 prints nothing */
+    if (g_precision == 0 && num == 0)
+    {
+        if (g_width > 0)
+        {
+            int i;
+            for (i = 0; i < g_width; i++)
+                add_to_buffer(' ', buffer, index);
+            return (g_width);
+        }
+        return (0);
+    }
+
     /* Check if we need 0 prefix for # flag */
     if ((g_flags & FLAG_HASH) && num != 0)
         prefix_len = 1;
@@ -90,6 +103,19 @@ int print_hex_formatted(unsigned long num, char *buffer, int *index,
     int num_digits, total = 0, prefix_len = 0;
 
     num_digits = count_hex_digits(num);
+
+    /* Special case: precision 0 with value 0 prints nothing */
+    if (g_precision == 0 && num == 0)
+    {
+        if (g_width > 0)
+        {
+            int i;
+            for (i = 0; i < g_width; i++)
+                add_to_buffer(' ', buffer, index);
+            return (g_width);
+        }
+        return (0);
+    }
 
     /* Check if we need 0x/0X prefix for # flag */
     if ((g_flags & FLAG_HASH) && num != 0)

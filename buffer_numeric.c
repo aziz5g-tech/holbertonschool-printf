@@ -57,6 +57,19 @@ int print_integer_buffer(va_list args, char *buffer, int *index)
 
 	num_digits = count_digits(num);
 
+	/* Special case: precision 0 with value 0 prints nothing */
+	if (g_precision == 0 && num == 0)
+	{
+		if (g_width > 0)
+		{
+			int i;
+			for (i = 0; i < g_width; i++)
+				add_to_buffer(' ', buffer, index);
+			return (g_width);
+		}
+		return (0);
+	}
+
 	/* Determine if we need sign/space/plus */
 	if (is_negative || (g_flags & FLAG_PLUS) || (g_flags & FLAG_SPACE))
 		sign_width = 1;
@@ -67,8 +80,8 @@ int print_integer_buffer(va_list args, char *buffer, int *index)
 		total = g_precision;
 	total += sign_width;
 
-	/* Apply left padding (if not left-aligned and not zero-padded with sign) */
-	if (!(g_flags & FLAG_MINUS) && !((g_flags & FLAG_ZERO) && g_precision < 0 && !is_negative))
+	/* Apply left padding (if not left-aligned and not zero-padded) */
+	if (!(g_flags & FLAG_MINUS) && !((g_flags & FLAG_ZERO) && g_precision < 0))
 		apply_width(buffer, index, total, 0);
 
 	/* Print sign */
@@ -127,6 +140,19 @@ int print_unsigned_buffer(va_list args, char *buffer, int *index)
 		num = va_arg(args, unsigned int);
 
 	num_digits = count_digits(num);
+
+	/* Special case: precision 0 with value 0 prints nothing */
+	if (g_precision == 0 && num == 0)
+	{
+		if (g_width > 0)
+		{
+			int i;
+			for (i = 0; i < g_width; i++)
+				add_to_buffer(' ', buffer, index);
+			return (g_width);
+		}
+		return (0);
+	}
 
 	/* Calculate total content width (precision zeros + digits) */
 	total = num_digits;
