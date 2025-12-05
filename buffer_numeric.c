@@ -116,25 +116,49 @@ int print_integer_buffer(va_list args, char *buffer, int *index)
  */
 int print_unsigned_buffer(va_list args, char *buffer, int *index)
 {
-	unsigned int num;
-	unsigned long num_long;
-	unsigned short num_short;
+	unsigned long num;
+	int num_digits, total = 0;
 
 	if (g_length == LENGTH_LONG)
-	{
-		num_long = va_arg(args, unsigned long);
-		return (print_long_buffer(num_long, buffer, index));
-	}
+		num = va_arg(args, unsigned long);
 	else if (g_length == LENGTH_SHORT)
-	{
-		num_short = (unsigned short)va_arg(args, unsigned int);
-		return (print_short_buffer(num_short, buffer, index));
-	}
+		num = (unsigned short)va_arg(args, unsigned int);
 	else
-	{
 		num = va_arg(args, unsigned int);
-		return (print_number_buffer(num, buffer, index));
+
+	num_digits = count_digits(num);
+
+	/* Calculate total content width (precision zeros + digits) */
+	total = num_digits;
+	if (g_precision > num_digits)
+		total = g_precision;
+
+	/* Apply left padding */
+	if (!(g_flags & FLAG_MINUS))
+	{
+		char pad = ((g_flags & FLAG_ZERO) && g_precision < 0) ? '0' : ' ';
+		int padding = (g_width > total) ? g_width - total : 0;
+		int i;
+
+		for (i = 0; i < padding; i++)
+			add_to_buffer(pad, buffer, index);
 	}
+
+	/* Apply precision zeros */
+	apply_precision_zeros(buffer, index, num_digits);
+
+	/* Print the number */
+	if (g_length == LENGTH_LONG)
+		print_long_buffer(num, buffer, index);
+	else if (g_length == LENGTH_SHORT)
+		print_short_buffer((unsigned short)num, buffer, index);
+	else
+		print_number_buffer((unsigned int)num, buffer, index);
+
+	/* Apply right padding for left-aligned */
+	apply_right_width(buffer, index, total);
+
+	return (g_width > total ? g_width : total);
 }
 
 /**
