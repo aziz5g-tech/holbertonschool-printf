@@ -183,17 +183,14 @@ int _printf(const char *format, ...)
 				format[i] == 'x' || format[i] == 'X' || format[i] == 'p')
 				has_spec = 1;
 
-			/* If nothing valid after flags, print "%<first-after-%>" and continue. */
+			/* If nothing valid after flags/length, print "%" and resume. */
 			if (!has_spec || format[i] == '\0')
 			{
 				add_to_buffer('%', buffer, &buffer_index);
-				add_to_buffer(format[j], buffer, &buffer_index);
-				count += 2;
-				i = j; /* resume scanning from that character */
+				count += 1;
+				i = j; /* skip the invalid char after '%' */
 				continue;
-			}
-
-			/* Delegate printing (flags available via g_flags). */
+			} /* Delegate printing (flags available via g_flags). */
 			count += handle_specifier_buffer(format[i], args,
 											 buffer, &buffer_index);
 		}
