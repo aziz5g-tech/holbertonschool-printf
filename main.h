@@ -71,6 +71,12 @@ extern int g_precision; /* Precision (-1 means not specified) */
 int print_reversed_buffer(va_list args, char *buffer, int *index);
 int print_rot13_buffer(va_list args, char *buffer, int *index);
 
+/* Format utility functions */
+int count_digits(unsigned long num);
+int apply_width(char *buffer, int *index, int content_len, int is_number);
+int apply_right_width(char *buffer, int *index, int content_len);
+int apply_precision_zeros(char *buffer, int *index, int num_digits);
+
 /* helper to apply prefixes/signs before digits */
 int buffer_apply_numeric_flags(long is_neg, unsigned long val,
                                int base, int uppercase, int flags);
