@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <stddef.h>
 
 #define BUFFER_SIZE 1024
 
@@ -36,15 +37,15 @@ int print_integer_buffer(va_list args, char *buffer, int *index);
 int print_unsigned_buffer(va_list args, char *buffer, int *index);
 int print_octal_buffer(unsigned int num, char *buffer, int *index);
 int print_hex_buffer(unsigned int num, char *buffer,
-		     int *index, int uppercase);
-
+                     int *index, int uppercase);
+int print_pointer_buffer(va_list args, char *buffer, int *index);
 
 /* Helper functions */
 int _putchar(char c);
 /* === flags bitmask === */
-#define FLAG_PLUS   (1 << 0)
-#define FLAG_SPACE  (1 << 1)
-#define FLAG_HASH   (1 << 2)
+#define FLAG_PLUS (1 << 0)
+#define FLAG_SPACE (1 << 1)
+#define FLAG_HASH (1 << 2)
 /* Exposes the current flags to number-printing routines. */
 extern int g_flags; /* NEW */
 

@@ -2,42 +2,48 @@
 
 /* Global bitmask for flags of the current '%' sequence. */
 int g_flags = 0;
-/** * handle_specifier_buffer - handles format specifiers 
+/** * handle_specifier_buffer - handles format specifiers
 with buffer * @c: specifier character
-* @args: argument list 
-* @buffer: output buffer 
-* @index: pointer to buffer index 
-* Return: number of characters produced */ 
+* @args: argument list
+* @buffer: output buffer
+* @index: pointer to buffer index
+* Return: number of characters produced */
 static int handle_specifier_buffer(char c, va_list args, char *buffer, int *index)
 {
-if (c == 'c') 
-	return (print_char_buffer(args, buffer, index));
-else if (c == 's') 
-	return (print_string_buffer(args, buffer, index)); 
-else if (c == 'S') 
-	return (print_string_special_buffer(args, buffer, index)); 
-else if (c == '%') 
-	return (print_percent_buffer(args, buffer, index)); 
-else if (c == 'd' || c == 'i') 
-	return (print_integer_buffer(args, buffer, index)); 
-else if (c == 'b') 
-{ 
-	unsigned int n = va_arg(args, unsigned int); 
-	return (print_binary_buffer(n, buffer, index)); 
-} 
-else if (c == 'u') 
-return (print_unsigned_buffer(args, buffer, index)); 
-else if (c == 'o') 
-{ 
-	unsigned int n = va_arg(args, unsigned int); 
-return (print_octal_buffer(n, buffer, index)); } 
-else if (c == 'x')
-{ 
-	unsigned int n = va_arg(args, unsigned int); 
-	return (print_hex_buffer(n, buffer, index, 0)); } 
-else if (c == 'X') 
-{ unsigned int n = va_arg(args, unsigned int); 
- return (print_hex_buffer(n, buffer, index, 1)); }
+	if (c == 'c')
+		return (print_char_buffer(args, buffer, index));
+	else if (c == 's')
+		return (print_string_buffer(args, buffer, index));
+	else if (c == 'S')
+		return (print_string_special_buffer(args, buffer, index));
+	else if (c == '%')
+		return (print_percent_buffer(args, buffer, index));
+	else if (c == 'd' || c == 'i')
+		return (print_integer_buffer(args, buffer, index));
+	else if (c == 'b')
+	{
+		unsigned int n = va_arg(args, unsigned int);
+		return (print_binary_buffer(n, buffer, index));
+	}
+	else if (c == 'u')
+		return (print_unsigned_buffer(args, buffer, index));
+	else if (c == 'o')
+	{
+		unsigned int n = va_arg(args, unsigned int);
+		return (print_octal_buffer(n, buffer, index));
+	}
+	else if (c == 'x')
+	{
+		unsigned int n = va_arg(args, unsigned int);
+		return (print_hex_buffer(n, buffer, index, 0));
+	}
+	else if (c == 'X')
+	{
+		unsigned int n = va_arg(args, unsigned int);
+		return (print_hex_buffer(n, buffer, index, 1));
+	}
+	else if (c == 'p')
+		return (print_pointer_buffer(args, buffer, index));
 
 	/* Unknown specifier */
 	add_to_buffer('%', buffer, index);
@@ -65,8 +71,8 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == '%')
 		{
-			int j, k;       /* j: first char after '%', k: look-ahead index */
-			int has_spec;   /* 1 if a valid specifier found after flags */
+			int j, k;	  /* j: first char after '%', k: look-ahead index */
+			int has_spec; /* 1 if a valid specifier found after flags */
 
 			/* Lone trailing '%' -> error */
 			if (!format[i + 1])
@@ -76,7 +82,7 @@ int _printf(const char *format, ...)
 				return (-1);
 			}
 
-			i++;            /* We saw '%' and advanced. */
+			i++; /* We saw '%' and advanced. */
 			j = i;
 
 			/*
@@ -92,7 +98,7 @@ int _printf(const char *format, ...)
 			{
 				add_to_buffer('%', buffer, &buffer_index);
 				count += 1;
-				i = j - 1;    /* next loop will print the space normally */
+				i = j - 1; /* next loop will print the space normally */
 				continue;
 			}
 
@@ -112,9 +118,9 @@ int _printf(const char *format, ...)
 			/* Validate that we actually have a supported specifier now. */
 			has_spec = 0;
 			if (format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
-			    format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
-			    format[i] == 'b' || format[i] == 'u' || format[i] == 'o' ||
-			    format[i] == 'x' || format[i] == 'X')
+				format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
+				format[i] == 'b' || format[i] == 'u' || format[i] == 'o' ||
+				format[i] == 'x' || format[i] == 'X' || format[i] == 'p')
 				has_spec = 1;
 
 			/* If nothing valid after flags, print "%<first-after-%>" and continue. */
@@ -129,7 +135,7 @@ int _printf(const char *format, ...)
 
 			/* Delegate printing (flags available via g_flags). */
 			count += handle_specifier_buffer(format[i], args,
-							 buffer, &buffer_index);
+											 buffer, &buffer_index);
 		}
 		else
 		{

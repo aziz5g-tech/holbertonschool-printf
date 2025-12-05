@@ -127,3 +127,66 @@ int print_hex_buffer(unsigned int num, char *buffer, int *index, int uppercase)
 	add_to_buffer(hex_char, buffer, index);
 	return (count + 1);
 }
+
+/**
+ * print_hex_ptr - prints a hexadecimal number for pointer
+ * @num: number to print
+ * @buffer: the buffer to use
+ * @index: pointer to buffer index
+ *
+ * Return: number of characters printed
+ */
+static int print_hex_ptr(unsigned long num, char *buffer, int *index)
+{
+	int count = 0;
+	char hex_char;
+
+	if (num / 16)
+		count += print_hex_ptr(num / 16, buffer, index);
+
+	if ((num % 16) < 10)
+		hex_char = (num % 16) + '0';
+	else
+		hex_char = (num % 16) - 10 + 'a';
+
+	add_to_buffer(hex_char, buffer, index);
+	return (count + 1);
+}
+
+/**
+ * print_pointer_buffer - prints a pointer address using buffer
+ * @args: argument list containing the pointer
+ * @buffer: the buffer to use
+ * @index: pointer to buffer index
+ *
+ * Return: number of characters printed
+ */
+int print_pointer_buffer(va_list args, char *buffer, int *index)
+{
+	void *ptr = va_arg(args, void *);
+	unsigned long address;
+	int count = 0;
+
+	if (ptr == NULL)
+	{
+		char *nil_str = "(nil)";
+		int i;
+
+		for (i = 0; nil_str[i]; i++)
+			add_to_buffer(nil_str[i], buffer, index);
+		return (5);
+	}
+
+	/* Cast pointer to unsigned long */
+	address = (unsigned long)(size_t)ptr;
+
+	/* Print "0x" prefix */
+	add_to_buffer('0', buffer, index);
+	add_to_buffer('x', buffer, index);
+	count = 2;
+
+	/* Print the address in hexadecimal */
+	count += print_hex_ptr(address, buffer, index);
+
+	return (count);
+}
