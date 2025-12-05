@@ -280,28 +280,68 @@ int print_pointer_buffer(va_list args, char *buffer, int *index)
 {
 	void *ptr = va_arg(args, void *);
 	unsigned long address;
-	int count = 0;
+	int count = 0, total = 0, hex_len = 0;
 
 	if (ptr == NULL)
 	{
 		char *nil_str = "(nil)";
-		int i;
+		int i, len = 5;
+
+		/* Apply left padding */
+		if (g_width > len && !(g_flags & FLAG_MINUS))
+		{
+			for (i = 0; i < g_width - len; i++)
+				add_to_buffer(' ', buffer, index);
+			count += g_width - len;
+		}
 
 		for (i = 0; nil_str[i]; i++)
 			add_to_buffer(nil_str[i], buffer, index);
-		return (5);
+		count += len;
+
+		/* Apply right padding */
+		if (g_width > len && (g_flags & FLAG_MINUS))
+		{
+			for (i = 0; i < g_width - len; i++)
+				add_to_buffer(' ', buffer, index);
+			count += g_width - len;
+		}
+
+		return (count);
 	}
 
 	/* Cast pointer to unsigned long */
 	address = (unsigned long)(size_t)ptr;
 
+	/* Calculate hex length */
+	hex_len = count_hex_digits(address);
+	total = 2 + hex_len; /* "0x" + hex digits */
+
+	/* Apply left padding */
+	if (g_width > total && !(g_flags & FLAG_MINUS))
+	{
+		int i;
+		for (i = 0; i < g_width - total; i++)
+			add_to_buffer(' ', buffer, index);
+		count += g_width - total;
+	}
+
 	/* Print "0x" prefix */
 	add_to_buffer('0', buffer, index);
 	add_to_buffer('x', buffer, index);
-	count = 2;
+	count += 2;
 
 	/* Print the address in hexadecimal */
 	count += print_hex_ptr(address, buffer, index);
+
+	/* Apply right padding */
+	if (g_width > total && (g_flags & FLAG_MINUS))
+	{
+		int i;
+		for (i = 0; i < g_width - total; i++)
+			add_to_buffer(' ', buffer, index);
+		count += g_width - total;
+	}
 
 	return (count);
 }

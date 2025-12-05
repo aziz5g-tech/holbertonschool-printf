@@ -104,7 +104,7 @@ int _printf(const char *format, ...)
 	{
 		if (format[i] == '%')
 		{
-			int j, k;	  /* j: first char after '%', k: look-ahead index */
+			int j;		  /* j: first char after '%' */
 			int has_spec; /* 1 if a valid specifier found after flags */
 
 			/* Lone trailing '%' -> error */
@@ -117,23 +117,6 @@ int _printf(const char *format, ...)
 
 			i++; /* We saw '%' and advanced. */
 			j = i;
-
-			/*
-			 * Look ahead to the eventual specifier to decide
-			 * whether a leading space should be treated as a flag.
-			 */
-			k = i;
-			while (format[k] == '+' || format[k] == ' ' || format[k] == '#')
-				k++;
-
-			/* If first is space but final specifier isn't d/i: print '%' only now. */
-			if (format[i] == ' ' && !(format[k] == 'd' || format[k] == 'i'))
-			{
-				add_to_buffer('%', buffer, &buffer_index);
-				count += 1;
-				i = j - 1; /* next loop will print the space normally */
-				continue;
-			}
 
 			/* Parse flags (+, space, #, 0, -) before the specifier. */
 			g_flags = 0;
@@ -151,9 +134,7 @@ int _printf(const char *format, ...)
 				else if (format[i] == '-')
 					g_flags |= FLAG_MINUS;
 				i++;
-			}
-
-			/* Parse field width */
+			} /* Parse field width */
 			g_width = 0;
 			if (format[i] == '*')
 			{
