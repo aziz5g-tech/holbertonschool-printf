@@ -52,6 +52,8 @@ int _putchar(char c);
 #define FLAG_PLUS (1 << 0)
 #define FLAG_SPACE (1 << 1)
 #define FLAG_HASH (1 << 2)
+#define FLAG_ZERO (1 << 3)
+#define FLAG_MINUS (1 << 4)
 /* Exposes the current flags to number-printing routines. */
 extern int g_flags; /* NEW */
 
@@ -60,6 +62,14 @@ extern int g_flags; /* NEW */
 #define LENGTH_LONG 1
 #define LENGTH_SHORT 2
 extern int g_length; /* Current length modifier */
+
+/* === field width and precision === */
+extern int g_width;     /* Field width */
+extern int g_precision; /* Precision (-1 means not specified) */
+
+/* Custom conversion specifiers */
+int print_reversed_buffer(va_list args, char *buffer, int *index);
+int print_rot13_buffer(va_list args, char *buffer, int *index);
 
 /* helper to apply prefixes/signs before digits */
 int buffer_apply_numeric_flags(long is_neg, unsigned long val,

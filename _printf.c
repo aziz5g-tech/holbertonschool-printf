@@ -4,6 +4,9 @@
 int g_flags = 0;
 /* Global variable for length modifier of the current '%' sequence. */
 int g_length = LENGTH_NONE;
+/* Global variables for field width and precision */
+int g_width = 0;
+int g_precision = -1;
 /** * handle_specifier_buffer - handles format specifiers
 with buffer * @c: specifier character
 * @args: argument list
@@ -91,6 +94,10 @@ static int handle_specifier_buffer(char c, va_list args, char *buffer, int *inde
 	}
 	else if (c == 'p')
 		return (print_pointer_buffer(args, buffer, index));
+	else if (c == 'r')
+		return (print_reversed_buffer(args, buffer, index));
+	else if (c == 'R')
+		return (print_rot13_buffer(args, buffer, index));
 
 	/* Unknown specifier */
 	add_to_buffer('%', buffer, index);
@@ -149,17 +156,43 @@ int _printf(const char *format, ...)
 				continue;
 			}
 
-			/* Parse flags (+, space, #) before the specifier. */
+			/* Parse flags (+, space, #, 0, -) before the specifier. */
 			g_flags = 0;
-			while (format[i] == '+' || format[i] == ' ' || format[i] == '#')
+			while (format[i] == '+' || format[i] == ' ' || format[i] == '#' ||
+				   format[i] == '0' || format[i] == '-')
 			{
 				if (format[i] == '+')
 					g_flags |= FLAG_PLUS;
 				else if (format[i] == ' ')
 					g_flags |= FLAG_SPACE;
-				else /* '#' */
+				else if (format[i] == '#')
 					g_flags |= FLAG_HASH;
+				else if (format[i] == '0')
+					g_flags |= FLAG_ZERO;
+				else if (format[i] == '-')
+					g_flags |= FLAG_MINUS;
 				i++;
+			}
+
+			/* Parse field width */
+			g_width = 0;
+			while (format[i] >= '0' && format[i] <= '9')
+			{
+				g_width = g_width * 10 + (format[i] - '0');
+				i++;
+			}
+
+			/* Parse precision */
+			g_precision = -1;
+			if (format[i] == '.')
+			{
+				i++;
+				g_precision = 0;
+				while (format[i] >= '0' && format[i] <= '9')
+				{
+					g_precision = g_precision * 10 + (format[i] - '0');
+					i++;
+				}
 			}
 
 			/* Parse length modifiers (l, h). */
@@ -180,10 +213,9 @@ int _printf(const char *format, ...)
 			if (format[i] == 'c' || format[i] == 's' || format[i] == 'S' ||
 				format[i] == '%' || format[i] == 'd' || format[i] == 'i' ||
 				format[i] == 'b' || format[i] == 'u' || format[i] == 'o' ||
-				format[i] == 'x' || format[i] == 'X' || format[i] == 'p')
-				has_spec = 1;
-
-			/* If nothing valid after flags/length, print "%" and resume. */
+				format[i] == 'x' || format[i] == 'X' || format[i] == 'p' ||
+				format[i] == 'r' || format[i] == 'R')
+				has_spec = 1; /* If nothing valid after flags/length, print "%" and resume. */
 			if (!has_spec || format[i] == '\0')
 			{
 				add_to_buffer('%', buffer, &buffer_index);
