@@ -35,12 +35,18 @@ int print_percent_buffer(va_list args, char *buffer, int *index);
 int print_number_buffer(unsigned int num, char *buffer, int *index);
 int print_integer_buffer(va_list args, char *buffer, int *index);
 int print_unsigned_buffer(va_list args, char *buffer, int *index);
+int print_long_buffer(unsigned long num, char *buffer, int *index);
+int print_short_buffer(unsigned short num, char *buffer, int *index);
 int print_octal_buffer(unsigned int num, char *buffer, int *index);
 int print_hex_buffer(unsigned int num, char *buffer,
                      int *index, int uppercase);
-int print_pointer_buffer(va_list args, char *buffer, int *index);
-
-/* Helper functions */
+int print_octal_long_buffer(unsigned long num, char *buffer, int *index);
+int print_octal_short_buffer(unsigned short num, char *buffer, int *index);
+int print_hex_long_buffer(unsigned long num, char *buffer,
+                          int *index, int uppercase);
+int print_hex_short_buffer(unsigned short num, char *buffer,
+                           int *index, int uppercase);
+int print_pointer_buffer(va_list args, char *buffer, int *index); /* Helper functions */
 int _putchar(char c);
 /* === flags bitmask === */
 #define FLAG_PLUS (1 << 0)
@@ -48,6 +54,12 @@ int _putchar(char c);
 #define FLAG_HASH (1 << 2)
 /* Exposes the current flags to number-printing routines. */
 extern int g_flags; /* NEW */
+
+/* === length modifiers === */
+#define LENGTH_NONE 0
+#define LENGTH_LONG 1
+#define LENGTH_SHORT 2
+extern int g_length; /* Current length modifier */
 
 /* helper to apply prefixes/signs before digits */
 int buffer_apply_numeric_flags(long is_neg, unsigned long val,

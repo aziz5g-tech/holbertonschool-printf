@@ -29,30 +29,72 @@ int print_number_buffer(unsigned int num, char *buffer, int *index)
  */
 int print_integer_buffer(va_list args, char *buffer, int *index)
 {
-	int n = va_arg(args, int);
+	long n_long;
+	short n_short;
+	int n;
 	unsigned int num;
+	unsigned long num_long;
+	unsigned short num_short;
 	int count = 0;
 
-	if (n < 0)
+	if (g_length == LENGTH_LONG)
 	{
-		/* negative sign for signed decimals */
-		add_to_buffer('-', buffer, index);
-		count++;
-		/* convert to magnitude without UB on INT_MIN */
-		num = (unsigned int)(-(n + 1)) + 1;
+		n_long = va_arg(args, long);
+		if (n_long < 0)
+		{
+			add_to_buffer('-', buffer, index);
+			count++;
+			num_long = (unsigned long)(-(n_long + 1)) + 1;
+		}
+		else
+		{
+			num_long = (unsigned long)n_long;
+			if (g_flags & FLAG_PLUS)
+				count += add_to_buffer('+', buffer, index);
+			else if (g_flags & FLAG_SPACE)
+				count += add_to_buffer(' ', buffer, index);
+		}
+		count += print_long_buffer(num_long, buffer, index);
+	}
+	else if (g_length == LENGTH_SHORT)
+	{
+		n_short = (short)va_arg(args, int);
+		if (n_short < 0)
+		{
+			add_to_buffer('-', buffer, index);
+			count++;
+			num_short = (unsigned short)(-(n_short + 1)) + 1;
+		}
+		else
+		{
+			num_short = (unsigned short)n_short;
+			if (g_flags & FLAG_PLUS)
+				count += add_to_buffer('+', buffer, index);
+			else if (g_flags & FLAG_SPACE)
+				count += add_to_buffer(' ', buffer, index);
+		}
+		count += print_short_buffer(num_short, buffer, index);
 	}
 	else
 	{
-		num = (unsigned int)n;
-
-		/* Print '+' or a leading space for positive values when flags request it. */
-		if (g_flags & FLAG_PLUS)
-			count += add_to_buffer('+', buffer, index);
-		else if (g_flags & FLAG_SPACE)
-			count += add_to_buffer(' ', buffer, index);
+		n = va_arg(args, int);
+		if (n < 0)
+		{
+			add_to_buffer('-', buffer, index);
+			count++;
+			num = (unsigned int)(-(n + 1)) + 1;
+		}
+		else
+		{
+			num = (unsigned int)n;
+			if (g_flags & FLAG_PLUS)
+				count += add_to_buffer('+', buffer, index);
+			else if (g_flags & FLAG_SPACE)
+				count += add_to_buffer(' ', buffer, index);
+		}
+		count += print_number_buffer(num, buffer, index);
 	}
 
-	count += print_number_buffer(num, buffer, index);
 	return (count);
 }
 
@@ -66,10 +108,25 @@ int print_integer_buffer(va_list args, char *buffer, int *index)
  */
 int print_unsigned_buffer(va_list args, char *buffer, int *index)
 {
-	unsigned int num = va_arg(args, unsigned int);
+	unsigned int num;
+	unsigned long num_long;
+	unsigned short num_short;
 
-	/* No sign for %u even if '+' or ' ' flags are present. */
-	return (print_number_buffer(num, buffer, index));
+	if (g_length == LENGTH_LONG)
+	{
+		num_long = va_arg(args, unsigned long);
+		return (print_long_buffer(num_long, buffer, index));
+	}
+	else if (g_length == LENGTH_SHORT)
+	{
+		num_short = (unsigned short)va_arg(args, unsigned int);
+		return (print_short_buffer(num_short, buffer, index));
+	}
+	else
+	{
+		num = va_arg(args, unsigned int);
+		return (print_number_buffer(num, buffer, index));
+	}
 }
 
 /**
@@ -189,4 +246,152 @@ int print_pointer_buffer(va_list args, char *buffer, int *index)
 	count += print_hex_ptr(address, buffer, index);
 
 	return (count);
+}
+
+/**
+ * print_long_buffer - prints an unsigned long number
+ * @num: number to print
+ * @buffer: the buffer to use
+ * @index: pointer to buffer index
+ *
+ * Return: number of characters printed
+ */
+int print_long_buffer(unsigned long num, char *buffer, int *index)
+{
+	int count = 0;
+
+	if (num / 10)
+		count += print_long_buffer(num / 10, buffer, index);
+
+	add_to_buffer((num % 10) + '0', buffer, index);
+	return (count + 1);
+}
+
+/**
+ * print_short_buffer - prints an unsigned short number
+ * @num: number to print
+ * @buffer: the buffer to use
+ * @index: pointer to buffer index
+ *
+ * Return: number of characters printed
+ */
+int print_short_buffer(unsigned short num, char *buffer, int *index)
+{
+	int count = 0;
+
+	if (num / 10)
+		count += print_short_buffer(num / 10, buffer, index);
+
+	add_to_buffer((num % 10) + '0', buffer, index);
+	return (count + 1);
+}
+
+/**
+ * print_octal_long_buffer - prints an octal long number using buffer
+ * @num: number to print
+ * @buffer: the buffer to use
+ * @index: pointer to buffer index
+ *
+ * Return: number of characters printed
+ */
+int print_octal_long_buffer(unsigned long num, char *buffer, int *index)
+{
+	int count = 0;
+
+	if ((num != 0) && (g_flags & FLAG_HASH) && (num / 8 == 0))
+		count += add_to_buffer('0', buffer, index);
+
+	if (num / 8)
+		count += print_octal_long_buffer(num / 8, buffer, index);
+
+	add_to_buffer((num % 8) + '0', buffer, index);
+	return (count + 1);
+}
+
+/**
+ * print_octal_short_buffer - prints an octal short number using buffer
+ * @num: number to print
+ * @buffer: the buffer to use
+ * @index: pointer to buffer index
+ *
+ * Return: number of characters printed
+ */
+int print_octal_short_buffer(unsigned short num, char *buffer, int *index)
+{
+	int count = 0;
+
+	if ((num != 0) && (g_flags & FLAG_HASH) && (num / 8 == 0))
+		count += add_to_buffer('0', buffer, index);
+
+	if (num / 8)
+		count += print_octal_short_buffer(num / 8, buffer, index);
+
+	add_to_buffer((num % 8) + '0', buffer, index);
+	return (count + 1);
+}
+
+/**
+ * print_hex_long_buffer - prints a long hexadecimal number using buffer
+ * @num: number to print
+ * @buffer: the buffer to use
+ * @index: pointer to buffer index
+ * @uppercase: 1 for uppercase, 0 for lowercase
+ *
+ * Return: number of characters printed
+ */
+int print_hex_long_buffer(unsigned long num, char *buffer,
+						  int *index, int uppercase)
+{
+	int count = 0;
+	char hex_char;
+
+	if ((num != 0) && (g_flags & FLAG_HASH) && (num / 16 == 0))
+	{
+		count += add_to_buffer('0', buffer, index);
+		count += add_to_buffer(uppercase ? 'X' : 'x', buffer, index);
+	}
+
+	if (num / 16)
+		count += print_hex_long_buffer(num / 16, buffer, index, uppercase);
+
+	if ((num % 16) < 10)
+		hex_char = (num % 16) + '0';
+	else
+		hex_char = (num % 16) - 10 + (uppercase ? 'A' : 'a');
+
+	add_to_buffer(hex_char, buffer, index);
+	return (count + 1);
+}
+
+/**
+ * print_hex_short_buffer - prints a short hexadecimal number using buffer
+ * @num: number to print
+ * @buffer: the buffer to use
+ * @index: pointer to buffer index
+ * @uppercase: 1 for uppercase, 0 for lowercase
+ *
+ * Return: number of characters printed
+ */
+int print_hex_short_buffer(unsigned short num, char *buffer,
+						   int *index, int uppercase)
+{
+	int count = 0;
+	char hex_char;
+
+	if ((num != 0) && (g_flags & FLAG_HASH) && (num / 16 == 0))
+	{
+		count += add_to_buffer('0', buffer, index);
+		count += add_to_buffer(uppercase ? 'X' : 'x', buffer, index);
+	}
+
+	if (num / 16)
+		count += print_hex_short_buffer(num / 16, buffer, index, uppercase);
+
+	if ((num % 16) < 10)
+		hex_char = (num % 16) + '0';
+	else
+		hex_char = (num % 16) - 10 + (uppercase ? 'A' : 'a');
+
+	add_to_buffer(hex_char, buffer, index);
+	return (count + 1);
 }

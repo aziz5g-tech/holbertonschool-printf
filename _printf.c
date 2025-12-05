@@ -2,6 +2,8 @@
 
 /* Global bitmask for flags of the current '%' sequence. */
 int g_flags = 0;
+/* Global variable for length modifier of the current '%' sequence. */
+int g_length = LENGTH_NONE;
 /** * handle_specifier_buffer - handles format specifiers
 with buffer * @c: specifier character
 * @args: argument list
@@ -29,18 +31,63 @@ static int handle_specifier_buffer(char c, va_list args, char *buffer, int *inde
 		return (print_unsigned_buffer(args, buffer, index));
 	else if (c == 'o')
 	{
-		unsigned int n = va_arg(args, unsigned int);
-		return (print_octal_buffer(n, buffer, index));
+		unsigned long n_long;
+		unsigned short n_short;
+		unsigned int n;
+
+		if (g_length == LENGTH_LONG)
+			n_long = va_arg(args, unsigned long);
+		else if (g_length == LENGTH_SHORT)
+			n_short = (unsigned short)va_arg(args, unsigned int);
+		else
+			n = va_arg(args, unsigned int);
+
+		if (g_length == LENGTH_LONG)
+			return (print_octal_long_buffer(n_long, buffer, index));
+		else if (g_length == LENGTH_SHORT)
+			return (print_octal_short_buffer(n_short, buffer, index));
+		else
+			return (print_octal_buffer(n, buffer, index));
 	}
 	else if (c == 'x')
 	{
-		unsigned int n = va_arg(args, unsigned int);
-		return (print_hex_buffer(n, buffer, index, 0));
+		unsigned long n_long;
+		unsigned short n_short;
+		unsigned int n;
+
+		if (g_length == LENGTH_LONG)
+			n_long = va_arg(args, unsigned long);
+		else if (g_length == LENGTH_SHORT)
+			n_short = (unsigned short)va_arg(args, unsigned int);
+		else
+			n = va_arg(args, unsigned int);
+
+		if (g_length == LENGTH_LONG)
+			return (print_hex_long_buffer(n_long, buffer, index, 0));
+		else if (g_length == LENGTH_SHORT)
+			return (print_hex_short_buffer(n_short, buffer, index, 0));
+		else
+			return (print_hex_buffer(n, buffer, index, 0));
 	}
 	else if (c == 'X')
 	{
-		unsigned int n = va_arg(args, unsigned int);
-		return (print_hex_buffer(n, buffer, index, 1));
+		unsigned long n_long;
+		unsigned short n_short;
+		unsigned int n;
+
+		if (g_length == LENGTH_LONG)
+			n_long = va_arg(args, unsigned long);
+		else if (g_length == LENGTH_SHORT)
+			n_short = (unsigned short)va_arg(args, unsigned int);
+		else
+			n = va_arg(args, unsigned int);
+
+		if (g_length == LENGTH_LONG)
+			return (print_hex_long_buffer(n_long, buffer, index, 1));
+		else if (g_length == LENGTH_SHORT)
+			return (print_hex_short_buffer(n_short, buffer, index, 1));
+		else
+			return (print_hex_buffer(n, buffer, index, 1));
 	}
 	else if (c == 'p')
 		return (print_pointer_buffer(args, buffer, index));
@@ -112,6 +159,19 @@ int _printf(const char *format, ...)
 					g_flags |= FLAG_SPACE;
 				else /* '#' */
 					g_flags |= FLAG_HASH;
+				i++;
+			}
+
+			/* Parse length modifiers (l, h). */
+			g_length = LENGTH_NONE;
+			if (format[i] == 'l')
+			{
+				g_length = LENGTH_LONG;
+				i++;
+			}
+			else if (format[i] == 'h')
+			{
+				g_length = LENGTH_SHORT;
 				i++;
 			}
 
