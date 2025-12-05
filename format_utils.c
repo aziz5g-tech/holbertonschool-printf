@@ -100,3 +100,47 @@ int apply_precision_zeros(char *buffer, int *index, int num_digits)
 
     return (zeros);
 }
+
+/**
+ * count_octal_digits - counts digits in octal representation
+ * @num: the number
+ *
+ * Return: number of octal digits
+ */
+int count_octal_digits(unsigned long num)
+{
+    int count = 0;
+
+    if (num == 0)
+        return (1);
+
+    while (num > 0)
+    {
+        count++;
+        num /= 8;
+    }
+
+    return (count);
+}
+
+/**
+ * count_hex_digits - counts digits in hexadecimal representation
+ * @num: the number
+ *
+ * Return: number of hex digits
+ */
+int count_hex_digits(unsigned long num)
+{
+    int count = 0;
+
+    if (num == 0)
+        return (1);
+
+    while (num > 0)
+    {
+        count++;
+        num /= 16;
+    }
+
+    return (count);
+}

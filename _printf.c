@@ -34,63 +34,42 @@ static int handle_specifier_buffer(char c, va_list args, char *buffer, int *inde
 		return (print_unsigned_buffer(args, buffer, index));
 	else if (c == 'o')
 	{
-		unsigned long n_long;
-		unsigned short n_short;
-		unsigned int n;
+		unsigned long n;
 
 		if (g_length == LENGTH_LONG)
-			n_long = va_arg(args, unsigned long);
+			n = va_arg(args, unsigned long);
 		else if (g_length == LENGTH_SHORT)
-			n_short = (unsigned short)va_arg(args, unsigned int);
+			n = (unsigned short)va_arg(args, unsigned int);
 		else
 			n = va_arg(args, unsigned int);
 
-		if (g_length == LENGTH_LONG)
-			return (print_octal_long_buffer(n_long, buffer, index));
-		else if (g_length == LENGTH_SHORT)
-			return (print_octal_short_buffer(n_short, buffer, index));
-		else
-			return (print_octal_buffer(n, buffer, index));
+		return (print_octal_formatted(n, buffer, index));
 	}
 	else if (c == 'x')
 	{
-		unsigned long n_long;
-		unsigned short n_short;
-		unsigned int n;
+		unsigned long n;
 
 		if (g_length == LENGTH_LONG)
-			n_long = va_arg(args, unsigned long);
+			n = va_arg(args, unsigned long);
 		else if (g_length == LENGTH_SHORT)
-			n_short = (unsigned short)va_arg(args, unsigned int);
+			n = (unsigned short)va_arg(args, unsigned int);
 		else
 			n = va_arg(args, unsigned int);
 
-		if (g_length == LENGTH_LONG)
-			return (print_hex_long_buffer(n_long, buffer, index, 0));
-		else if (g_length == LENGTH_SHORT)
-			return (print_hex_short_buffer(n_short, buffer, index, 0));
-		else
-			return (print_hex_buffer(n, buffer, index, 0));
+		return (print_hex_formatted(n, buffer, index, 0));
 	}
 	else if (c == 'X')
 	{
-		unsigned long n_long;
-		unsigned short n_short;
-		unsigned int n;
+		unsigned long n;
 
 		if (g_length == LENGTH_LONG)
-			n_long = va_arg(args, unsigned long);
+			n = va_arg(args, unsigned long);
 		else if (g_length == LENGTH_SHORT)
-			n_short = (unsigned short)va_arg(args, unsigned int);
+			n = (unsigned short)va_arg(args, unsigned int);
 		else
 			n = va_arg(args, unsigned int);
 
-		if (g_length == LENGTH_LONG)
-			return (print_hex_long_buffer(n_long, buffer, index, 1));
-		else if (g_length == LENGTH_SHORT)
-			return (print_hex_short_buffer(n_short, buffer, index, 1));
-		else
-			return (print_hex_buffer(n, buffer, index, 1));
+		return (print_hex_formatted(n, buffer, index, 1));
 	}
 	else if (c == 'p')
 		return (print_pointer_buffer(args, buffer, index));
@@ -176,10 +155,23 @@ int _printf(const char *format, ...)
 
 			/* Parse field width */
 			g_width = 0;
-			while (format[i] >= '0' && format[i] <= '9')
+			if (format[i] == '*')
 			{
-				g_width = g_width * 10 + (format[i] - '0');
+				g_width = va_arg(args, int);
+				if (g_width < 0)
+				{
+					g_flags |= FLAG_MINUS;
+					g_width = -g_width;
+				}
 				i++;
+			}
+			else
+			{
+				while (format[i] >= '0' && format[i] <= '9')
+				{
+					g_width = g_width * 10 + (format[i] - '0');
+					i++;
+				}
 			}
 
 			/* Parse precision */
@@ -187,15 +179,21 @@ int _printf(const char *format, ...)
 			if (format[i] == '.')
 			{
 				i++;
-				g_precision = 0;
-				while (format[i] >= '0' && format[i] <= '9')
+				if (format[i] == '*')
 				{
-					g_precision = g_precision * 10 + (format[i] - '0');
+					g_precision = va_arg(args, int);
 					i++;
 				}
-			}
-
-			/* Parse length modifiers (l, h). */
+				else
+				{
+					g_precision = 0;
+					while (format[i] >= '0' && format[i] <= '9')
+					{
+						g_precision = g_precision * 10 + (format[i] - '0');
+						i++;
+					}
+				}
+			} /* Parse length modifiers (l, h). */
 			g_length = LENGTH_NONE;
 			if (format[i] == 'l')
 			{

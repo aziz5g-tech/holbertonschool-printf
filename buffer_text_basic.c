@@ -33,10 +33,29 @@ int print_binary_buffer(unsigned int n, char *buffer, int *index)
 int print_char_buffer(va_list args, char *buffer, int *index)
 {
 	char c = va_arg(args, int);
+	int i, padding;
 
+	/* Calculate padding */
+	padding = (g_width > 1) ? g_width - 1 : 0;
+
+	/* Apply left padding */
+	if (padding > 0 && !(g_flags & FLAG_MINUS))
+	{
+		for (i = 0; i < padding; i++)
+			add_to_buffer(' ', buffer, index);
+	}
+
+	/* Print character */
 	add_to_buffer(c, buffer, index);
 
-	return (1);
+	/* Apply right padding */
+	if (padding > 0 && (g_flags & FLAG_MINUS))
+	{
+		for (i = 0; i < padding; i++)
+			add_to_buffer(' ', buffer, index);
+	}
+
+	return (g_width > 1 ? g_width : 1);
 }
 
 /**
@@ -50,18 +69,39 @@ int print_char_buffer(va_list args, char *buffer, int *index)
 int print_string_buffer(va_list args, char *buffer, int *index)
 {
 	char *str = va_arg(args, char *);
-	int count = 0;
+	int count = 0, len = 0, i, padding;
 
 	if (!str)
-	{
 		str = "(null)";
+
+	/* Calculate string length (respecting precision) */
+	while (str[len] && (g_precision < 0 || len < g_precision))
+		len++;
+
+	/* Calculate padding */
+	padding = (g_width > len) ? g_width - len : 0;
+
+	/* Apply left padding */
+	if (padding > 0 && !(g_flags & FLAG_MINUS))
+	{
+		for (i = 0; i < padding; i++)
+			add_to_buffer(' ', buffer, index);
+		count += padding;
 	}
 
-	while (*str)
+	/* Print string (up to precision limit) */
+	for (i = 0; i < len; i++)
 	{
-		add_to_buffer(*str, buffer, index);
-		str++;
+		add_to_buffer(str[i], buffer, index);
 		count++;
+	}
+
+	/* Apply right padding */
+	if (padding > 0 && (g_flags & FLAG_MINUS))
+	{
+		for (i = 0; i < padding; i++)
+			add_to_buffer(' ', buffer, index);
+		count += padding;
 	}
 
 	return (count);

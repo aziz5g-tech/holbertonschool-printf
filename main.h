@@ -73,9 +73,15 @@ int print_rot13_buffer(va_list args, char *buffer, int *index);
 
 /* Format utility functions */
 int count_digits(unsigned long num);
+int count_octal_digits(unsigned long num);
+int count_hex_digits(unsigned long num);
 int apply_width(char *buffer, int *index, int content_len, int is_number);
 int apply_right_width(char *buffer, int *index, int content_len);
 int apply_precision_zeros(char *buffer, int *index, int num_digits);
+int print_octal_formatted(unsigned long num, char *buffer, int *index);
+int print_hex_formatted(unsigned long num, char *buffer, int *index, int uppercase);
+void print_octal_recursive(unsigned long num, char *buffer, int *index);
+void print_hex_recursive(unsigned long num, char *buffer, int *index, int uppercase);
 
 /* helper to apply prefixes/signs before digits */
 int buffer_apply_numeric_flags(long is_neg, unsigned long val,
